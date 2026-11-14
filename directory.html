@@ -1,0 +1,523 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#32373d">
+  <title>Beit Mellat</title>
+  <style>
+    @font-face { font-family: Poppins; src: url("bootstrap-sidebar-09/fonts/poppins-400-latin.woff2") format("woff2"); font-style: normal; font-weight: 400; font-display: swap; }
+    @font-face { font-family: Poppins; src: url("bootstrap-sidebar-09/fonts/poppins-500-latin.woff2") format("woff2"); font-style: normal; font-weight: 500; font-display: swap; }
+    @font-face { font-family: Poppins; src: url("bootstrap-sidebar-09/fonts/poppins-600-latin.woff2") format("woff2"); font-style: normal; font-weight: 600; font-display: swap; }
+    :root { color-scheme: light; --ink:#202b38; --muted:#718094; --blue:#2f89fc; --blue-deep:#1f6fd1; --sidebar:#32373d; --line:#e8edf3; --surface:#ffffff; --canvas:#dbe2ec; }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { min-width:320px; margin:0; background:var(--canvas); color:var(--ink); font-family:Poppins,"Segoe UI",Arial,sans-serif; font-size:14px; line-height:1.6; }
+    button, select { font: inherit; }
+    button:focus-visible, select:focus-visible, a:focus-visible { outline:3px solid rgba(47,137,252,.46); outline-offset:3px; }
+    .app-shell { min-height:100vh; display:flex; }
+    .sidebar { position:relative; z-index:4; display:flex; flex:0 0 286px; flex-direction:column; min-height:100vh; overflow:hidden; background:var(--sidebar); color:#fff; box-shadow:8px 0 28px rgba(26,39,53,.08); transition:transform .25s ease; }
+    .sidebar-cover { position:relative; min-height:214px; padding:24px 24px 22px; overflow:hidden; background:radial-gradient(ellipse at 82% 2%, rgba(117,191,255,.62), transparent 34%), radial-gradient(ellipse at 16% 100%, rgba(46,137,252,.74), transparent 42%), linear-gradient(142deg,#20384f 0%,#28619a 50%,#3d9af3 100%); }
+    .sidebar-cover::before, .sidebar-cover::after { position:absolute; content:""; border:1px solid rgba(255,255,255,.18); border-radius:50%; pointer-events:none; }
+    .sidebar-cover::before { width:260px; height:260px; right:-145px; top:-125px; }
+    .sidebar-cover::after { width:180px; height:180px; right:-86px; top:-84px; }
+    .brand-top { position:relative; display:flex; align-items:center; gap:10px; z-index:1; }
+    .brand-mark { display:grid; width:34px; height:34px; place-items:center; border:1px solid rgba(255,255,255,.4); border-radius:11px; background:rgba(255,255,255,.15); color:white; }
+    .brand-mark svg { width:19px; height:19px; }
+    .brand-name { font-size:12px; font-weight:500; letter-spacing:.14em; text-transform:uppercase; }
+    .profile-block { position:relative; z-index:1; margin-top:27px; text-align:center; }
+    .profile-mark { display:grid; width:68px; height:68px; margin:0 auto 10px; place-items:center; border:3px solid rgba(255,255,255,.9); border-radius:50%; background:rgba(255,255,255,.18); box-shadow:0 5px 18px rgba(13,54,96,.18); font-size:21px; font-weight:500; letter-spacing:.05em; }
+    .profile-block h1 { margin:0; color:#fff; font-size:24px; font-weight:600; line-height:1.3; }
+    .profile-block p { margin:4px 0 0; color:rgba(255,255,255,.78); font-size:11px; letter-spacing:.035em; }
+    .sidebar-nav { padding:18px 14px 14px; }
+    .nav-caption { margin:0 12px 8px; color:rgba(255,255,255,.46); font-size:10px; font-weight:500; letter-spacing:.16em; text-transform:uppercase; }
+    .nav-list { display:grid; gap:5px; margin:0; padding:0; list-style:none; }
+    .nav-link { display:flex; width:100%; min-height:47px; align-items:center; gap:13px; padding:10px 12px; border:1px solid transparent; border-radius:9px; background:transparent; color:rgba(255,255,255,.72); text-align:left; cursor:pointer; transition:background .18s ease, color .18s ease, border-color .18s ease; }
+    .nav-link:hover { background:rgba(255,255,255,.075); color:#fff; }
+    .nav-link[aria-current="page"] { border-color:rgba(255,255,255,.1); background:linear-gradient(95deg, rgba(47,137,252,.27), rgba(47,137,252,.11)); color:#fff; box-shadow:inset 3px 0 0 var(--blue); }
+    .nav-icon { display:grid; width:20px; height:20px; flex:0 0 20px; place-items:center; color:currentColor; }
+    .nav-icon svg { width:18px; height:18px; stroke:currentColor; }
+    .nav-label { flex:1; font-size:13px; font-weight:400; }
+    .nav-arrow { width:15px; height:15px; color:rgba(255,255,255,.36); }
+    .sidebar-foot { margin-top:auto; padding:15px 20px 18px; border-top:1px solid rgba(255,255,255,.08); color:rgba(255,255,255,.5); font-size:10px; }
+    .sidebar-foot span { display:block; }
+    .main-column { display:flex; min-width:0; flex:1; flex-direction:column; }
+    .topbar { display:flex; min-height:76px; align-items:center; justify-content:space-between; gap:18px; padding:14px clamp(22px,4vw,52px); border-bottom:1px solid var(--line); background:rgba(255,255,255,.88); }
+    .topbar-left { display:flex; align-items:center; gap:14px; }
+    .crumb { display:flex; align-items:center; gap:9px; color:#8995a5; font-size:12px; }
+    .crumb strong { color:#394657; font-weight:500; }
+    .crumb-dot { width:4px; height:4px; border-radius:50%; background:#aeb9c6; }
+    .language-wrap { display:flex; align-items:center; gap:9px; color:#778496; font-size:11px; }
+    .language-wrap svg { width:16px; height:16px; stroke:#7e8a9a; }
+    .language-select { min-width:130px; padding:8px 30px 8px 11px; border:1px solid #e1e7ef; border-radius:8px; background:#fff; color:#344254; cursor:pointer; }
+    .menu-toggle { display:none; width:38px; height:38px; place-items:center; border:1px solid #e1e7ef; border-radius:9px; background:#fff; color:#354254; cursor:pointer; }
+    .menu-toggle svg { width:19px; height:19px; stroke:currentColor; }
+    .sidebar-collapse { display:grid; width:38px; height:38px; place-items:center; border:1px solid #e1e7ef; border-radius:9px; background:#fff; color:#354254; cursor:pointer; margin-right:10px; }
+    .sidebar-collapse svg { width:18px; height:18px; stroke:currentColor; }
+    .sidebar.collapsed { flex:0 0 0; width:0; min-width:0; overflow:hidden; }
+    main { width:100%; max-width:1330px; margin:0 auto; padding:clamp(26px,4.5vw,58px) clamp(22px,4vw,52px) 38px; }
+    .page-heading { margin:0; color:#202b38; font-size:clamp(30px,4vw,43px); font-weight:500; letter-spacing:-.045em; line-height:1.18; }
+    .lead { max-width:650px; margin:15px 0 0; color:#748195; font-size:14px; line-height:1.8; }
+    .toolbar { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px; margin:26px 0 18px; }
+    .toolbar-left { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+    .search-input { min-width:240px; padding:9px 12px; border:1px solid #e1e7ef; border-radius:8px; background:#fff; color:#344254; }
+    .view-toggle { display:inline-flex; border:1px solid #e1e7ef; border-radius:8px; overflow:hidden; background:#fff; }
+    .view-toggle button { border:0; background:transparent; padding:8px 14px; cursor:pointer; color:#536a84; font-size:12px; }
+    .view-toggle button.is-active { background:#eef6ff; color:#1f6fd1; font-weight:500; }
+    .count { color:#96a1af; font-size:11px; }
+    /* grid */
+    .filters { display:flex; flex-wrap:nowrap; gap:8px; margin:0 0 18px; overflow-x:auto; }
+    .filters .search-input { min-width:90px; width:auto; flex:0 0 auto; }
+    .people-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(260px,1fr)); gap:14px; }
+    .person-card { background:#fff; border:1px solid var(--line); border-radius:12px; padding:16px; display:flex; gap:12px; align-items:flex-start; transition:transform .18s ease, box-shadow .18s ease; }
+    .person-card:hover { transform:translateY(-2px); box-shadow:0 12px 28px rgba(36,58,85,.06); }
+    .avatar { width:70px; height:70px; border-radius:50%; background:#eef6ff; color:#3185e7; display:grid; place-items:center; font-weight:600; flex:0 0 70px; overflow:hidden; }
+    .avatar img { width:100%; height:100%; object-fit:cover; }
+    .person-info { min-width:0; }
+    .person-name { margin:0; font-size:14px; font-weight:500; color:#253244; }
+    .person-meta { margin:2px 0 0; color:#8390a0; font-size:11px; }
+    .person-fields { margin:8px 0 0; display:grid; gap:3px; font-size:11px; color:#536a84; }
+    .person-fields span { display:flex; gap:6px; }
+    .person-fields strong { color:#344255; font-weight:500; min-width:78px; }
+    .person-links { margin-top:8px; display:flex; gap:10px; font-size:11px; }
+    .person-links a { color:#2f89fc; text-decoration:none; }
+    /* list */
+    .people-table-wrap { overflow:auto; border:1px solid var(--line); border-radius:12px; background:#fff; }
+    .people-table { width:100%; border-collapse:collapse; font-size:12px; min-width:1200px; }
+    .people-table th, .people-table td { padding:9px 10px; border-bottom:1px solid var(--line); text-align:left; white-space:nowrap; }
+    .people-table th { background:#f4f7fb; color:#394657; font-weight:500; font-size:11px; position:sticky; top:0; }
+    .people-table tr:hover td { background:#f9fbff; }
+    .people-table tr:nth-child(even) td { background:#eef2f6; }
+    .hidden { display:none !important; }
+    .modal { display:none; position:fixed; inset:0; z-index:20; }
+    .modal.is-visible { display:block; }
+    .modal-backdrop { position:absolute; inset:0; background:rgba(18,28,39,.45); backdrop-filter:blur(2px); }
+    .modal-card { position:absolute; top:10%; left:50%; transform:translate(-50%,0); width:min(700px,92vw); max-height:90vh; overflow:auto; background:#fff; border:1px solid var(--line); border-radius:12px; box-shadow:0 24px 60px rgba(18,28,39,.25); padding:22px; display:flex; flex-direction:column; gap:14px; }
+    .modal-header { display:flex; align-items:center; justify-content:space-between; gap:10px; border-bottom:1px solid var(--line); padding-bottom:10px; }
+    .modal-header h3 { margin:0; font-size:16px; }
+    .modal-card .form-row { margin-bottom:0; }
+    .modal-card .form-row label { font-size:12px; }
+    .modal-card .form-row input { padding:8px 10px; font-size:12px; }
+    .page-footer { display:flex; justify-content:space-between; gap:16px; margin-top:33px; padding-top:16px; border-top:1px solid var(--line); color:#9aa5b2; font-size:10px; }
+    .toast { position:fixed; right:22px; bottom:22px; z-index:10; max-width:min(360px, calc(100vw - 36px)); padding:12px 16px; border:1px solid rgba(255,255,255,.12); border-radius:10px; background:#283545; color:#fff; box-shadow:0 12px 30px rgba(18,32,49,.22); opacity:0; transform:translateY(8px); pointer-events:none; transition:opacity .2s ease, transform .2s ease; font-size:12px; }
+    .toast.is-visible { opacity:1; transform:translateY(0); }
+    .scrim { display:none; }
+    @media (max-width:980px) { .sidebar { flex-basis:250px; } }
+    @media (max-width:760px) { .sidebar { position:fixed; inset:0 auto 0 0; width:min(286px,84vw); min-height:100dvh; transform:translateX(-102%); } .sidebar.is-open { transform:translateX(0); } .scrim { position:fixed; inset:0; z-index:3; display:block; background:rgba(18,28,39,.42); opacity:0; pointer-events:none; transition:opacity .2s ease; } .scrim.is-visible { opacity:1; pointer-events:auto; } .menu-toggle { display:grid; } .topbar { min-height:66px; padding:11px 18px; } .crumb { font-size:11px; } .language-wrap > span { display:none; } .language-select { min-width:105px; } main { padding:30px 18px 25px; } .page-footer { flex-direction:column; gap:5px; } .search-input { min-width:160px; } }
+    @media (max-width:450px) { .page-heading { font-size:31px; } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior:auto !important; transition-duration:.01ms !important; animation-duration:.01ms !important; } }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar" aria-label="Main sidebar">
+      <div class="sidebar-cover">
+        <div class="brand-top">
+          <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 19.5V8.8L12 3l8 5.8v10.7h-5.3v-6.2H9.3v6.2H4Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M8 10.5h.01M16 10.5h.01" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"/></svg></span>
+          <span class="brand-name" data-i18n="brand">Beit Mellat</span>
+        </div>
+        <div class="profile-block">
+          <div class="profile-mark" aria-hidden="true">BM</div>
+          <h1 data-i18n="sidebarTitle">Beit Mellat</h1>
+          <p data-i18n="sidebarTagline">A place for family connections</p>
+        </div>
+      </div>
+      <nav class="sidebar-nav" aria-label="Primary navigation">
+        <p class="nav-caption" data-i18n="menuCaption">Menu</p>
+        <ul class="nav-list">
+          <li><button class="nav-link" type="button" data-nav="home"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg></span><span class="nav-label" data-i18n="home">Home</span><svg class="nav-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></li>
+          <li><button class="nav-link" type="button" data-nav="search" aria-current="page"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.2 4.2"/></svg></span><span class="nav-label" data-i18n="search">Directory</span><svg class="nav-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></li>
+          <li><button class="nav-link" type="button" data-nav="import"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V4m0 0L7.5 8.5M12 4l4.5 4.5"/><path d="M5 14.5v4A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5v-4"/></svg></span><span class="nav-label" data-i18n="import">Import Data</span><svg class="nav-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></li>
+          <li><button class="nav-link" type="button" data-nav="business-directory"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="m16 21 4-4M4 9l16-2"/></svg></span><span class="nav-label" data-i18n="business-directory">Business Directory</span><svg class="nav-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></li>
+          <li><button class="nav-link" type="button" data-nav="contact"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="14" rx="2"/><path d="m4.5 7 7.5 5.8L19.5 7"/></svg></span><span class="nav-label" data-i18n="contact">Contact Admin</span><svg class="nav-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></li>
+          <li><button class="nav-link" type="button" data-nav="backup"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v12H4zM8 20h8M12 16v4"/></svg></span><span class="nav-label" data-i18n="backup">Backup &amp; Restore</span><svg class="nav-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></li>
+<li><button class="nav-link" type="button" data-nav="users"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="nav-label">Users</span><svg class="nav-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></li>
+          <li><button class="nav-link" type="button" data-nav="inbox"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="5" width="22" height="14" rx="2"/><path d="M12 11l3 2M7.5 11l4.5 3"/></svg></span><span class="nav-label" data-i18n="inbox">Inbox</span><svg class="nav-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></li>
+          <li><button class="nav-link" type="button" data-nav="logout" aria-label="Free, reserved menu item two"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7.5h16M6 7.5V19h12V7.5M9 7.5V5h6v2.5M9.5 11v4.5M14.5 11v4.5"/></svg></span><span class="nav-label" data-i18n="logout">Logout</span><svg class="nav-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></li>
+        </ul>
+      </nav>
+      <div class="sidebar-foot"><span data-i18n="sideFoot">Directory workspace</span><span>HerWebDB</span></div>
+    </aside>
+    <button class="scrim" id="scrim" type="button" aria-label="Close navigation"></button>
+
+    <div class="main-column">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="menu-toggle" id="menuToggle" type="button" aria-label="Open navigation" aria-controls="sidebar" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+          <button class="sidebar-collapse" id="sidebarCollapse" type="button" aria-label="Collapse sidebar" aria-controls="sidebar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+          <div class="crumb"><span data-i18n="breadcrumbHome">Home</span><span class="crumb-dot" aria-hidden="true"></span><strong data-i18n="breadcrumbDirectory">Directory</strong></div>
+        </div>
+        <label class="language-wrap" for="languageSelect">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3.5 9h17M3.5 15h17M12 3c2.2 2.4 3.2 5.4 3.2 9s-1 6.6-3.2 9c-2.2-2.4-3.2-5.4-3.2-9s1-6.6 3.2-9Z"/></svg>
+          <span data-i18n="languageLabel">Language</span>
+          <select class="language-select" id="languageSelect" aria-label="Select display language">
+            <option value="en">EN · English</option>
+            <option value="fr">FR · Français</option>
+            <option value="es">SP · Español</option>
+            <option value="pt">PT · Português</option>
+          </select>
+        </label>
+      </header>
+
+      <main id="directory">
+        <h1 class="page-heading" data-i18n="pageTitle">Directory</h1>
+        <p class="lead" data-i18n="pageLead">Browse family records. Switch between a card grid and a detailed list.</p>
+
+        <div class="toolbar">
+          <div class="toolbar-left">
+            <input class="search-input" id="searchInput" type="search" data-i18n-placeholder="searchPlaceholder" placeholder="Search by name, family, city..." />
+            <div class="view-toggle" role="group" aria-label="View mode">
+              <button type="button" data-view="grid" class="is-active" data-i18n="gridView">Grid</button>
+              <button type="button" data-view="list" data-i18n="listView">List</button>
+            </div>
+          </div>
+          <span class="count" id="countLabel"></span>
+        </div>
+
+        <div class="filters" id="filters">
+          <input class="search-input" id="fName" type="search" placeholder="Name" />
+          <input class="search-input" id="fFamily" type="search" placeholder="Family" />
+          <select class="search-input" id="fProfession"><option value="">All professions</option></select>
+          <select class="search-input" id="fBloodType"><option value="">All blood types</option></select>
+          <select class="search-input" id="fCountry"><option value="">All countries</option></select>
+          <select class="search-input" id="fCity"><option value="">All cities</option></select>
+        </div>
+
+        <section id="gridView" class="people-grid"></section>
+
+        <div id="listView" class="people-table-wrap hidden">
+          <table class="people-table">
+            <thead>
+              <tr>
+                <th data-i18n="colName">Name</th>
+                <th data-i18n="colFather">Father</th>
+                <th data-i18n="colFamily">Family</th>
+                <th data-i18n="colBirth">Year of birth</th>
+                <th data-i18n="colCity">City</th>
+                <th data-i18n="colCountry">Country</th>
+                <th data-i18n="colProfession">Profession</th>
+                <th data-i18n="colPhone">Phone number</th>
+                <th data-i18n="colEmail">email address</th>
+                <th data-i18n="colHobbies">Hobbies</th>
+                <th data-i18n="colBlood">Blood type</th>
+                <th data-i18n="colDonor">Probable donor</th>
+                <th data-i18n="colFacebook">Facebook account</th>
+                <th data-i18n="colInstagram">Instagram account</th>
+                <th data-i18n="colActions">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+        </div>
+
+        <div class="modal" id="editModal">
+          <div class="modal-backdrop" id="editModalBackdrop"></div>
+          <div class="modal-card">
+            <div class="modal-header"><h3>Edit person</h3><button class="btn secondary" id="editModalClose">Close</button></div>
+            <form id="editForm">
+              <div class="form-row"><label>ID</label><input id="eId" type="text" readonly /></div>
+              <div class="form-row"><label for="eName">Name</label><input id="eName" type="text" /></div>
+              <div class="form-row"><label for="eFather">Father</label><input id="eFather" type="text" /></div>
+              <div class="form-row"><label for="eFamily">Family</label><input id="eFamily" type="text" /></div>
+              <div class="form-row"><label for="eBirthYear">Year of birth</label><input id="eBirthYear" type="text" /></div>
+              <div class="form-row"><label for="eCity">City</label><input id="eCity" type="text" /></div>
+              <div class="form-row"><label for="eCountry">Country</label><input id="eCountry" type="text" /></div>
+              <div class="form-row"><label for="eProfession">Profession</label><input id="eProfession" type="text" /></div>
+              <div class="form-row"><label for="ePhone">Phone number</label><input id="ePhone" type="text" /></div>
+              <div class="form-row"><label for="eEmail">email address</label><input id="eEmail" type="email" /></div>
+              <div class="form-row"><label for="eHobbies">Hobbies</label><input id="eHobbies" type="text" /></div>
+              <div class="form-row"><label for="eCv">CV</label><input id="eCv" type="text" /></div>
+              <div class="form-row"><label for="eBloodType">Blood type</label><input id="eBloodType" type="text" /></div>
+              <div class="form-row"><label for="eProbableDonor">Probable donor</label><input id="eProbableDonor" type="text" /></div>
+              <div class="form-row"><label for="ePhoto">Photo</label><input id="ePhoto" type="file" accept="image/*" /></div>
+              <div class="form-row" style="margin-top:8px;"><img id="ePhotoPreview" src="" style="max-width:100px;max-height:100px;border:1px solid #e1e7ef;border-radius:8px;display:none;" alt="Current photo" /></div>
+              <div class="form-row"><label for="eFacebook">Facebook account</label><input id="eFacebook" type="text" /></div>
+              <div class="form-row"><label for="eInstagram">Instagram account</label><input id="eInstagram" type="text" /></div>
+              <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px;">
+                <button class="btn secondary" id="editModalCancel" type="button">Cancel</button>
+                <button class="btn" id="editModalSave" type="button">Save changes</button>
+              </div>
+            </form>
+            <div class="result" id="editResult"></div>
+          </div>
+        </div>
+
+        <footer class="page-footer"><span data-i18n="footerLeft">HerWebDB · Directory</span><span data-i18n="footerRight">English is the default display language.</span></footer>
+      </main>
+    </div>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    (() => {
+      const originalFetch = window.fetch;
+      window.fetch = function(url, options) {
+        options = options || {};
+        if (!options.credentials) options.credentials = 'include';
+        return originalFetch(url, options);
+      };
+      // Auth gate
+      fetch('/api/me').then(r=>{
+        if(!r.ok){ window.location.href='login.html'; return null; }
+        return r.json();
+      }).then(data=>{
+        if(!data || !data.user) return;
+        if(data.mustChange){ window.location.href='change-password.html'; return; }
+        if(data.user.status !== 'confirmed'){ window.location.href='login.html?waiting=1'; return; }
+        isAdmin = data.user.role === 'admin';
+        document.querySelectorAll('[data-nav="import"], [data-nav="backup"], [data-nav="users"], [data-nav="inbox"]').forEach(el=>{ if(!isAdmin && el.parentElement) el.parentElement.style.display='none'; });
+        if(isAdmin){ document.querySelector('[data-nav="contact"]').parentElement.style.display='none'; }
+        // show user in topbar
+        const wrap = document.querySelector('.language-wrap');
+        if(wrap){ const span=document.createElement('span'); span.style.cssText='font-size:11px;color:#778496;margin-right:6px;'; span.textContent=data.user.username; wrap.parentNode.insertBefore(span, wrap); }
+      }).catch(()=>{ window.location.href='login.html'; });
+      const samplePeople = [
+        { name:"Marie Dupont", father:"Jean Dupont", family:"Dupont", birth:1985, city:"Lyon", country:"France", profession:"Teacher", phone:"+33 6 12 34 56 78", email:"marie.dupont@example.com", hobbies:"Reading, hiking", cv:"Teacher since 2010", blood:"A+", donor:"Yes", photo:"https://i.pravatar.cc/80?img=1", facebook:"marie.dupont", instagram:"@marie_dupont" },
+        { name:"Carlos Silva", father:"Antonio Silva", family:"Silva", birth:1978, city:"São Paulo", country:"Brazil", profession:"Engineer", phone:"+55 11 98765-4321", email:"carlos.silva@example.com", hobbies:"Football, music", cv:"Civil engineer", blood:"O-", donor:"No", photo:"https://i.pravatar.cc/80?img=2", facebook:"carlos.silva", instagram:"@carlos_silva" },
+        { name:"Amara Okafor", father:"Chinedu Okafor", family:"Okafor", birth:1990, city:"Lagos", country:"Nigeria", profession:"Doctor", phone:"+234 803 000 0000", email:"amara.okafor@example.com", hobbies:"Cooking", cv:"General practitioner", blood:"B+", donor:"Yes", photo:"https://i.pravatar.cc/80?img=3", facebook:"amara.okafor", instagram:"@amara_okafor" },
+        { name:"Liam O'Connor", father:"Patrick O'Connor", family:"O'Connor", birth:1982, city:"Dublin", country:"Ireland", profession:"Designer", phone:"+353 87 123 4567", email:"liam.oconnor@example.com", hobbies:"Photography", cv:"UX designer", blood:"AB+", donor:"No", photo:"https://i.pravatar.cc/80?img=4", facebook:"liam.oconnor", instagram:"@liam_oc" },
+        { name:"Sofia Reyes", father:"Miguel Reyes", family:"Reyes", birth:1995, city:"Madrid", country:"Spain", profession:"Nurse", phone:"+34 612 345 678", email:"sofia.reyes@example.com", hobbies:"Dance", cv:"Pediatric nurse", blood:"A-", donor:"Yes", photo:"https://i.pravatar.cc/80?img=5", facebook:"sofia.reyes", instagram:"@sofia_reyes" },
+        { name:"Kenji Tanaka", father:"Hiroshi Tanaka", family:"Tanaka", birth:1975, city:"Osaka", country:"Japan", profession:"Architect", phone:"+81 90 1234 5678", email:"kenji.tanaka@example.com", hobbies:"Gardening", cv:"Architect 20 yrs", blood:"O+", donor:"Yes", photo:"https://i.pravatar.cc/80?img=6", facebook:"kenji.tanaka", instagram:"@kenji_tanaka" }
+      ];
+      let people = samplePeople.slice();
+
+      function mapRow(r){ return { id:r.id, name:r.name, father:r.father, family:r.family, birth:r.birth_year, city:r.city, country:r.country, profession:r.profession, phone:r.phone, email:r.email, hobbies:r.hobbies, cv:r.cv, blood:r.blood_type, donor:r.probable_donor, photo:r.photo, facebook:r.facebook, instagram:r.instagram }; }
+
+      const copy = {
+        en: { brand:"Beit Mellat", sidebarTitle:"Beit Mellat", sidebarTagline:"A place for family connections", menuCaption:"Menu", home:"Home", search:"Directory", import:"Import Data", contact:"Contact Admin", backup:"Backup & Restore", free:"Free", sideFoot:"Directory workspace", breadcrumbHome:"Home", breadcrumbDirectory:"Directory", languageLabel:"Language", pageTitle:"Directory", pageLead:"Browse family records. Switch between a card grid and a detailed list.", searchPlaceholder:"Search by name, family, city...", gridView:"Grid", listView:"List", footerLeft:"HerWebDB · Directory", footerRight:"English is the default display language.", colName:"Name", colFather:"Father", colFamily:"Family", colBirth:"Year of birth", colCity:"City", colCountry:"Country", colProfession:"Profession", colPhone:"Phone number", colEmail:"email address", colHobbies:"Hobbies", colCv:"CV", colBlood:"Blood type", colDonor:"Probable donor", colPhoto:"Photo", colFacebook:"Facebook account", colInstagram:"Instagram account", colActions:"Actions", navMessage:"This section will be connected in a later project step.", countLabel:"{n} records" },
+        fr: { brand:"Beit Mellat", sidebarTitle:"Beit Mellat", sidebarTagline:"Un espace pour les liens familiaux", menuCaption:"Menu", home:"Accueil", search:"Annuaire", import:"Importer des données", contact:"Contacter l'administrateur", backup:"Sauvegarde et restauration", free:"Free", sideFoot:"Espace de l'annuaire", breadcrumbHome:"Accueil", breadcrumbDirectory:"Annuaire", languageLabel:"Langue", pageTitle:"Annuaire", pageLead:"Parcourez les fiches familiales. Basculez entre une grille de cartes et une liste détaillée.", searchPlaceholder:"Rechercher par nom, famille, ville...", gridView:"Grille", listView:"Liste", footerLeft:"HerWebDB · Annuaire", footerRight:"L'anglais est la langue d'affichage par défaut.", colName:"Nom", colFather:"Père", colFamily:"Famille", colBirth:"Année de naissance", colCity:"Ville", colCountry:"Pays", colProfession:"Profession", colPhone:"Téléphone", colEmail:"adresse e-mail", colHobbies:"Loisirs", colCv:"CV", colBlood:"Groupe sanguin", colDonor:"Donneur probable", colPhoto:"Photo", colFacebook:"Compte Facebook", colInstagram:"Compte Instagram", colActions:"Actions", navMessage:"Cette section sera reliée lors d'une prochaine étape.", countLabel:"{n} fiches" },
+        es: { brand:"Beit Mellat", sidebarTitle:"Beit Mellat", sidebarTagline:"Un espacio para conectar a la familia", menuCaption:"Menú", home:"Inicio", search:"Directorio", import:"Importar datos", contact:"Contactar al administrador", backup:"Respaldo y restauración", free:"Free", sideFoot:"Espacio del directorio", breadcrumbHome:"Inicio", breadcrumbDirectory:"Directorio", languageLabel:"Idioma", pageTitle:"Directorio", pageLead:"Explora las fichas familiares. Cambia entre una cuadrícula y una lista detallada.", searchPlaceholder:"Buscar por nombre, familia, ciudad...", gridView:"Cuadrícula", listView:"Lista", footerLeft:"HerWebDB · Directorio", footerRight:"El idioma predeterminado es inglés.", colName:"Nombre", colFather:"Padre", colFamily:"Familia", colBirth:"Año de nacimiento", colCity:"Ciudad", colCountry:"País", colProfession:"Profesión", colPhone:"Teléfono", colEmail:"correo electrónico", colHobbies:"Aficiones", colCv:"CV", colBlood:"Grupo sanguíneo", colDonor:"Donante probable", colPhoto:"Foto", colFacebook:"Cuenta de Facebook", colInstagram:"Cuenta de Instagram", colActions:"Acciones", navMessage:"Esta sección se conectará en una etapa posterior.", countLabel:"{n} registros" },
+        pt: { brand:"Beit Mellat", sidebarTitle:"Beit Mellat", sidebarTagline:"Um espaço para aproximar a família", menuCaption:"Menu", home:"Início", search:"Diretório", import:"Importar dados", contact:"Contactar o administrador", backup:"Backup e restauração", free:"Free", sideFoot:"Área do diretório", breadcrumbHome:"Início", breadcrumbDirectory:"Diretório", languageLabel:"Idioma", pageTitle:"Diretório", pageLead:"Navegue pelas fichas familiares. Alterne entre uma grade de cartões e uma lista detalhada.", searchPlaceholder:"Pesquisar por nome, família, cidade...", gridView:"Grade", listView:"Lista", footerLeft:"HerWebDB · Diretório", footerRight:"O inglês é o idioma de exibição padrão.", colName:"Nome", colFather:"Pai", colFamily:"Família", colBirth:"Ano de nascimento", colCity:"Cidade", colCountry:"País", colProfession:"Profissão", colPhone:"Telefone", colEmail:"e-mail", colHobbies:"Hobbies", colCv:"CV", colBlood:"Tipo sanguíneo", colDonor:"Doador provável", colPhoto:"Foto", colFacebook:"Conta do Facebook", colInstagram:"Conta do Instagram", colActions:"Ações", navMessage:"Esta seção será conectada em uma etapa posterior.", countLabel:"{n} registros" }
+      };
+
+      const selector = document.getElementById("languageSelect");
+      const toast = document.getElementById("toast");
+      const sidebar = document.getElementById("sidebar");
+      const toggle = document.getElementById("menuToggle");
+      const scrim = document.getElementById("scrim");
+      const searchInput = document.getElementById("searchInput");
+      const fName = document.getElementById("fName");
+      const fFamily = document.getElementById("fFamily");
+      const fProfession = document.getElementById("fProfession");
+      const fBloodType = document.getElementById("fBloodType");
+      const fCountry = document.getElementById("fCountry");
+      const fCity = document.getElementById("fCity");
+      const gridEl = document.getElementById("gridView");
+      const listWrap = document.getElementById("listView");
+      const tableBody = document.getElementById("tableBody");
+      const countLabel = document.getElementById("countLabel");
+      let toastTimer;
+      let isAdmin = false;
+
+      function esc(v){ return String(v==null?"":v).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+
+      function renderGrid(list){
+        gridEl.innerHTML = list.map(p => `
+          <article class="person-card">
+            <div class="avatar">${p.photo?`<img src="${esc(p.photo)}" alt="">`:esc(p.name.charAt(0))}</div>
+            <div class="person-info">
+              <h3 class="person-name">${esc(p.name)}</h3>
+              <p class="person-meta">${esc(p.family)} · ${esc(p.city)}, ${esc(p.country)}</p>
+              <div class="person-fields">
+                <span><strong>${copy[lang()].colFather}:</strong> ${esc(p.father)}</span>
+                <span><strong>${copy[lang()].colBirth}:</strong> ${esc(p.birth)}</span>
+                <span><strong>${copy[lang()].colProfession}:</strong> ${esc(p.profession)}</span>
+                <span><strong>${copy[lang()].colPhone}:</strong> ${esc(p.phone)}</span>
+                <span><strong>${copy[lang()].colBlood}:</strong> ${esc(p.blood)}</span>
+              </div>
+              <div class="person-links">
+                ${p.email?`<a href="mailto:${esc(p.email)}">${esc(p.email)}</a>`:""}
+                ${p.facebook?`<a href="#" title="Facebook">${esc(p.facebook)}</a>`:""}
+                ${p.instagram?`<a href="#" title="Instagram">${esc(p.instagram)}</a>`:""}
+              </div>
+            </div>
+          </article>`).join("");
+      }
+
+      function renderTable(list){
+        tableBody.innerHTML = list.map(p => `
+          <tr>
+            <td>${esc(p.name)}</td><td>${esc(p.father)}</td><td>${esc(p.family)}</td><td>${esc(p.birth)}</td>
+            <td>${esc(p.city)}</td><td>${esc(p.country)}</td><td>${esc(p.profession)}</td><td>${esc(p.phone)}</td>
+            <td>${esc(p.email)}</td><td>${esc(p.hobbies)}</td><td>${esc(p.blood)}</td>
+            <td>${esc(p.donor)}</td><td>${esc(p.facebook)}</td><td>${esc(p.instagram)}</td>
+            <td>${isAdmin?`<button class="btn" data-edit="${p.id}" style="padding:4px 8px;font-size:11px;">Edit</button> <button class="btn danger" data-del="${p.id}" style="padding:4px 8px;font-size:11px;">Delete</button>`:""}</td>
+          </tr>`).join("");
+        if (!isAdmin) return;
+        document.querySelectorAll("[data-edit]").forEach(b=>b.addEventListener("click", async ()=>{
+          const id = b.dataset.edit;
+          const res = await fetch("/api/people/"+id);
+          if(!res.ok){ showResult("Failed to load person", true); return; }
+          const person = await res.json();
+          document.getElementById("eId").value = person.id;
+          document.getElementById("eName").value = person.name||"";
+          document.getElementById("eFather").value = person.father||"";
+          document.getElementById("eFamily").value = person.family||"";
+          document.getElementById("eBirthYear").value = person.birth_year||"";
+          document.getElementById("eCity").value = person.city||"";
+          document.getElementById("eCountry").value = person.country||"";
+          document.getElementById("eProfession").value = person.profession||"";
+          document.getElementById("ePhone").value = person.phone||"";
+          document.getElementById("eEmail").value = person.email||"";
+          document.getElementById("eHobbies").value = person.hobbies||"";
+          document.getElementById("eCv").value = person.cv||"";
+          document.getElementById("eBloodType").value = person.blood_type||"";
+          document.getElementById("eProbableDonor").value = person.probable_donor||"";
+          const photoPrev = document.getElementById("ePhotoPreview");
+          if(person.photo){ photoPrev.src = person.photo; photoPrev.style.display = "block"; } else { photoPrev.style.display = "none"; }
+          document.getElementById("eFacebook").value = person.facebook||"";
+          document.getElementById("eInstagram").value = person.instagram||"";
+          document.getElementById("editModal").classList.add("is-visible");
+        }));
+        document.querySelectorAll("[data-del]").forEach(b=>b.addEventListener("click", async ()=>{
+          if(!confirm("Delete this person?")) return;
+          const id = b.dataset.del;
+          const res = await fetch("/api/people/"+id, {method:"DELETE"});
+          if(!res.ok){ showResult("Delete failed", true); return; }
+          showResult("Person deleted.", false);
+          fetch('/api/people').then(r=>r.ok?r.json():null).then(data=>{
+            if (Array.isArray(data)) { people = data.map(mapRow); populateFilters(); filter(); }
+          });
+        }));
+      }
+
+      function lang(){ return (copy[selector.value]?selector.value:"en"); }
+
+      function setLanguage(language){
+        const selected = copy[language]?language:"en";
+        document.documentElement.lang = selected;
+        document.title = copy[selected].brand;
+        document.querySelectorAll("[data-i18n]").forEach((el)=>{ const k=el.dataset.i18n; if(copy[selected][k]) el.textContent=copy[selected][k]; });
+        document.querySelectorAll("[data-i18n-placeholder]").forEach((el)=>{ const k=el.dataset.i18nPlaceholder; if(copy[selected][k]) el.placeholder=copy[selected][k]; });
+        selector.value = selected;
+        try { localStorage.setItem("herwebdb-language", selected); } catch(_) {}
+        filter();
+      }
+
+      function filter(){
+        const q = searchInput.value.trim().toLowerCase();
+        const nameQ = fName.value.trim().toLowerCase();
+        const famQ = fFamily.value.trim().toLowerCase();
+        const prof = fProfession.value;
+        const bloodType = fBloodType.value;
+        const country = fCountry.value;
+        const city = fCity.value;
+        const list = people.filter(p => {
+          if (q && !Object.values(p).some(v=>String(v==null?"":v).toLowerCase().includes(q))) return false;
+          if (nameQ && !String(p.name==null?"":p.name).toLowerCase().includes(nameQ)) return false;
+          if (famQ && !String(p.family==null?"":p.family).toLowerCase().includes(famQ)) return false;
+          if (prof && p.profession !== prof) return false;
+          if (bloodType && p.blood !== bloodType) return false;
+          if (country && p.country !== country) return false;
+          if (city && p.city !== city) return false;
+          return true;
+        });
+        renderGrid(list); renderTable(list);
+        countLabel.textContent = copy[lang()].countLabel.replace("{n}", list.length);
+      }
+
+      function populateFilters(){
+        const uniq = (key) => [...new Set(people.map(p=>p[key]).filter(v=>v!=null && v!==""))].sort();
+        const fill = (sel, values) => {
+          const keep = sel.value;
+          const first = sel.options[0];
+          sel.innerHTML = "";
+          sel.appendChild(first.cloneNode(true));
+          values.forEach(v => { const o=document.createElement('option'); o.value=v; o.textContent=v; sel.appendChild(o); });
+          if (values.includes(keep)) sel.value = keep;
+        };
+        fill(fProfession, uniq('profession'));
+        fill(fBloodType, uniq('blood'));
+        fill(fCountry, uniq('country'));
+        fill(fCity, uniq('city'));
+      }
+
+      function setView(view){
+        const grid = view==="grid";
+        gridEl.classList.toggle("hidden", !grid);
+        listWrap.classList.toggle("hidden", grid);
+        document.querySelectorAll(".view-toggle button").forEach(b=>b.classList.toggle("is-active", b.dataset.view===view));
+        try { localStorage.setItem("herwebdb-view", view); } catch(_) {}
+      }
+
+      function closeMenu(){ sidebar.classList.remove("is-open"); scrim.classList.remove("is-visible"); toggle.setAttribute("aria-expanded","false"); }
+      function showToast(msg){ toast.textContent=msg; toast.classList.add("is-visible"); window.clearTimeout(toastTimer); toastTimer=window.setTimeout(()=>toast.classList.remove("is-visible"),2400); }
+      selector.addEventListener("change", e=>setLanguage(e.target.value));
+      searchInput.addEventListener("input", filter);
+      fName.addEventListener("input", filter);
+      fFamily.addEventListener("input", filter);
+      fProfession.addEventListener("change", filter);
+      fBloodType.addEventListener("change", filter);
+      fCountry.addEventListener("change", filter);
+      fCity.addEventListener("change", filter);
+      document.querySelectorAll(".view-toggle button").forEach(b=>b.addEventListener("click", ()=>setView(b.dataset.view)));
+      document.querySelectorAll("[data-nav]").forEach(item=>item.addEventListener("click", ()=>{
+          const pages = { home:"index.html", directory:"directory.html", search:"directory.html", import:"import.html", backup:"backup.html", contact:"contact.html", users:"users.html", inbox:"inbox.html", "business-directory":"business-directory.html" };
+        const nav = item.dataset.nav;
+        if (nav === 'logout') { fetch('/api/logout',{method:'POST'}).finally(()=>{ window.location.href='index.html'; }); return; }
+        if (pages[nav]) { window.location.href = pages[nav]; return; }
+        document.querySelectorAll("[data-nav]").forEach(n=>n.removeAttribute("aria-current"));
+        item.setAttribute("aria-current","page");
+        showToast(copy[lang()].navMessage);
+        closeMenu();
+      }));
+      toggle.addEventListener("click", ()=>{ const open=sidebar.classList.toggle("is-open"); scrim.classList.toggle("is-visible",open); toggle.setAttribute("aria-expanded",String(open)); });
+      const sidebarCollapse = document.getElementById("sidebarCollapse");
+      const collapseIcon = sidebarCollapse.querySelector("svg path");
+      sidebarCollapse.addEventListener("click", ()=>{ const collapsed = sidebar.classList.toggle("collapsed"); sidebarCollapse.setAttribute("aria-expanded", String(!collapsed)); collapseIcon.setAttribute("d", collapsed ? "M9 6l6 6-6 6" : "M15 18l-6-6 6-6"); });
+      scrim.addEventListener("click", closeMenu);
+      document.addEventListener("keydown", e=>{ if(e.key==="Escape") closeMenu(); });
+
+      const editModal = document.getElementById("editModal");
+      const editModalBackdrop = document.getElementById("editModalBackdrop");
+      const editModalClose = document.getElementById("editModalClose");
+      const editModalCancel = document.getElementById("editModalCancel");
+      const editModalSave = document.getElementById("editModalSave");
+      const editResult = document.getElementById("editResult");
+      function closeEditModal(){ editModal.classList.remove("is-visible"); editResult.textContent=""; editResult.className="result"; }
+      editModalClose.addEventListener("click", closeEditModal);
+      editModalCancel.addEventListener("click", closeEditModal);
+      editModalBackdrop.addEventListener("click", closeEditModal);
+      editModalSave.addEventListener("click", async ()=>{
+        const id = document.getElementById("eId").value;
+        const formData = new FormData();
+        formData.append('name', document.getElementById("eName").value);
+        formData.append('father', document.getElementById("eFather").value);
+        formData.append('family', document.getElementById("eFamily").value);
+        formData.append('birth_year', document.getElementById("eBirthYear").value);
+        formData.append('city', document.getElementById("eCity").value);
+        formData.append('country', document.getElementById("eCountry").value);
+        formData.append('profession', document.getElementById("eProfession").value);
+        formData.append('phone', document.getElementById("ePhone").value);
+        formData.append('email', document.getElementById("eEmail").value);
+        formData.append('hobbies', document.getElementById("eHobbies").value);
+        formData.append('cv', document.getElementById("eCv").value);
+        formData.append('blood_type', document.getElementById("eBloodType").value);
+        formData.append('probable_donor', document.getElementById("eProbableDonor").value);
+        formData.append('facebook', document.getElementById("eFacebook").value);
+        formData.append('instagram', document.getElementById("eInstagram").value);
+        const photoFile = document.getElementById("ePhoto").files[0];
+        if(photoFile) formData.append('photo', photoFile);
+        try {
+          const res = await fetch("/api/people/"+id, { method:"PUT", body: formData });
+          if(!res.ok){ const d = await res.json().catch(()=>({})); editResult.textContent = d.error||"Save failed"; editResult.className="result error"; editResult.classList.add("show"); return; }
+          closeEditModal();
+          showResult("Person updated.", false);
+          fetch('/api/people').then(r=>r.ok?r.json():null).then(data=>{
+            if (Array.isArray(data)) { people = data.map(mapRow); populateFilters(); filter(); }
+          });
+        } catch(err){ editResult.textContent = err.message; editResult.className="result error"; editResult.classList.add("show"); }
+      });
+
+      let initialLanguage="en"; try { initialLanguage=localStorage.getItem("herwebdb-language")||"en"; } catch(_) {}
+      let initialView="grid"; try { initialView=localStorage.getItem("herwebdb-view")||"grid"; } catch(_) {}
+      setLanguage(initialLanguage);
+      setView(initialView);
+      populateFilters();
+      fetch('/api/people').then(r=>r.ok?r.json():null).then(data=>{
+        if (Array.isArray(data)) { people = data.map(mapRow); populateFilters(); filter(); }
+      }).catch(()=>{ /* keep sample data */ });
+    })();
+  </script>
+</body>
+</html>

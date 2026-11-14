@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#32373d">
+  <title>Beit Mellat</title>
+  <style>
+    @font-face { font-family: Poppins; src: url("bootstrap-sidebar-09/fonts/poppins-400-latin.woff2") format("woff2"); font-style: normal; font-weight: 400; font-display: swap; }
+    @font-face { font-family: Poppins; src: url("bootstrap-sidebar-09/fonts/poppins-500-latin.woff2") format("woff2"); font-style: normal; font-weight: 500; font-display: swap; }
+    @font-face { font-family: Poppins; src: url("bootstrap-sidebar-09/fonts/poppins-600-latin.woff2") format("woff2"); font-style: normal; font-weight: 600; font-display: swap; }
+    :root { color-scheme: light; --ink:#202b38; --muted:#718094; --blue:#2f89fc; --blue-deep:#1f6fd1; --sidebar:#32373d; --line:#e8edf3; --surface:#ffffff; --canvas:#dbe2ec; }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { min-width:320px; margin:0; background:var(--canvas); color:var(--ink); font-family:Poppins,"Segoe UI",Arial,sans-serif; font-size:14px; line-height:1.6; }
+    button, select, input { font: inherit; }
+    button:focus-visible, select:focus-visible, a:focus-visible, input:focus-visible { outline:3px solid rgba(47,137,252,.46); outline-offset:3px; }
+    .app-shell { min-height:100vh; display:flex; }
+    .sidebar { position:relative; z-index:4; display:flex; flex:0 0 286px; flex-direction:column; min-height:100vh; overflow:hidden; background:var(--sidebar); color:#fff; box-shadow:8px 0 28px rgba(26,39,53,.08); transition:transform .25s ease; }
+    .sidebar-cover { position:relative; min-height:214px; padding:24px 24px 22px; overflow:hidden; background:radial-gradient(ellipse at 82% 2%, rgba(117,191,255,.62), transparent 34%), radial-gradient(ellipse at 16% 100%, rgba(46,137,252,.74), transparent 42%), linear-gradient(142deg,#20384f 0%,#28619a 50%,#3d9af3 100%); }
+    .sidebar-cover::before, .sidebar-cover::after { position:absolute; content:""; border:1px solid rgba(255,255,255,.18); border-radius:50%; pointer-events:none; }
+    .sidebar-cover::before { width:260px; height:260px; right:-145px; top:-125px; }
+    .sidebar-cover::after { width:180px; height:180px; right:-86px; top:-84px; }
+    .brand-top { position:relative; display:flex; align-items:center; gap:10px; z-index:1; }
+    .brand-mark { display:grid; width:34px; height:34px; place-items:center; border:1px solid rgba(255,255,255,.4); border-radius:11px; background:rgba(255,255,255,.15); color:white; }
+    .brand-mark svg { width:19px; height:19px; }
+    .brand-name { font-size:12px; font-weight:500; letter-spacing:.14em; text-transform:uppercase; }
+    .profile-block { position:relative; z-index:1; margin-top:27px; text-align:center; }
+    .profile-mark { display:grid; width:68px; height:68px; margin:0 auto 10px; place-items:center; border:3px solid rgba(255,255,255,.9); border-radius:50%; background:rgba(255,255,255,.18); box-shadow:0 5px 18px rgba(13,54,96,.18); font-size:21px; font-weight:500; letter-spacing:.05em; }
+    .profile-block h1 { margin:0; color:#fff; font-size:24px; font-weight:600; line-height:1.3; }
+    .profile-block p { margin:4px 0 0; color:rgba(255,255,255,.78); font-size:11px; letter-spacing:.035em; }
+    .sidebar-nav { padding:18px 14px 14px; }
+    .nav-caption { margin:0 12px 8px; color:rgba(255,255,255,.46); font-size:10px; font-weight:500; letter-spacing:.16em; text-transform:uppercase; }
+    .nav-list { display:grid; gap:5px; margin:0; padding:0; list-style:none; }
+    .nav-link { display:flex; width:100%; min-height:47px; align-items:center; gap:13px; padding:10px 12px; border:1px solid transparent; border-radius:9px; background:transparent; color:rgba(255,255,255,.72); text-align:left; cursor:pointer; transition:background .18s ease, color .18s ease, border-color .18s ease; }
+    .nav-link:hover { background:rgba(255,255,255,.075); color:#fff; }
+    .nav-link[aria-current="page"] { border-color:rgba(255,255,255,.1); background:linear-gradient(95deg, rgba(47,137,252,.27), rgba(47,137,252,.11)); color:#fff; box-shadow:inset 3px 0 0 var(--blue); }
+    .nav-icon { display:grid; width:20px; height:20px; flex:0 0 20px; place-items:center; color:currentColor; }
+    .nav-icon svg { width:18px; height:18px; stroke:currentColor; }
+    .nav-label { flex:1; font-size:13px; font-weight:400; }
+    .nav-arrow { width:15px; height:15px; color:rgba(255,255,255,.36); }
+    .sidebar-foot { margin-top:auto; padding:15px 20px 18px; border-top:1px solid rgba(255,255,255,.08); color:rgba(255,255,255,.5); font-size:10px; }
+    .sidebar-foot span { display:block; }
+    .main-column { display:flex; min-width:0; flex:1; flex-direction:column; }
+    .topbar { display:flex; min-height:76px; align-items:center; justify-content:space-between; gap:18px; padding:14px clamp(22px,4vw,52px); border-bottom:1px solid var(--line); background:rgba(255,255,255,.88); }
+    .topbar-left { display:flex; align-items:center; gap:14px; }
+    .crumb { display:flex; align-items:center; gap:9px; color:#8995a5; font-size:12px; }
+    .crumb strong { color:#394657; font-weight:500; }
+    .crumb-dot { width:4px; height:4px; border-radius:50%; background:#aeb9c6; }
+    .language-wrap { display:flex; align-items:center; gap:9px; color:#778496; font-size:11px; }
+    .language-wrap svg { width:16px; height:16px; stroke:#7e8a9a; }
+    .language-select { min-width:130px; padding:8px 30px 8px 11px; border:1px solid #e1e7ef; border-radius:8px; background:#fff; color:#344254; cursor:pointer; }
+    .menu-toggle { display:none; width:38px; height:38px; place-items:center; border:1px solid #e1e7ef; border-radius:9px; background:#fff; color:#354254; cursor:pointer; }
+    .menu-toggle svg { width:19px; height:19px; stroke:currentColor; }
+    main { width:100%; max-width:900px; margin:0 auto; padding:clamp(26px,4.5vw,58px) clamp(22px,4vw,52px) 38px; }
+    .page-heading { margin:0; color:#202b38; font-size:clamp(30px,4vw,43px); font-weight:500; letter-spacing:-.045em; line-height:1.18; }
+    .lead { max-width:650px; margin:15px 0 0; color:#748195; font-size:14px; line-height:1.8; }
+    .card { background:#fff; border:1px solid var(--line); border-radius:12px; padding:22px; margin-top:24px; }
+    .card h2 { margin:0 0 8px; font-size:16px; color:#2a3646; }
+    .card p { margin:0 0 14px; color:#718094; font-size:13px; line-height:1.7; }
+    .btn { padding:9px 16px; border:0; border-radius:8px; background:var(--blue); color:#fff; cursor:pointer; font-size:13px; margin-top:12px; margin-right:8px; }
+    .btn.secondary { background:#eef6ff; color:#1f6fd1; }
+    .dropzone { border:2px dashed #cfe0f5; border-radius:10px; padding:28px; text-align:center; color:#536a84; background:#f7fafd; margin-top:10px; }
+    .dropzone input { display:none; }
+    .dropzone label { display:inline-block; padding:9px 16px; border-radius:8px; background:var(--blue); color:#fff; cursor:pointer; font-size:13px; }
+    .result { margin-top:14px; padding:12px 14px; border-radius:8px; background:#f3f8ff; color:#334c69; font-size:12px; display:none; }
+    .result.show { display:block; }
+    .result.error { background:#fdecea; color:#a63a3a; }
+    .page-footer { display:flex; justify-content:space-between; gap:16px; margin-top:33px; padding-top:16px; border-top:1px solid var(--line); color:#9aa5b2; font-size:10px; }
+    .toast { position:fixed; right:22px; bottom:22px; z-index:10; max-width:min(360px, calc(100vw - 36px)); padding:12px 16px; border:1px solid rgba(255,255,255,.12); border-radius:10px; background:#283545; color:#fff; box-shadow:0 12px 30px rgba(18,32,49,.22); opacity:0; transform:translateY(8px); pointer-events:none; transition:opacity .2s ease, transform .2s ease; font-size:12px; }
+    .toast.is-visible { opacity:1; transform:translateY(0); }
+    .scrim { display:none; }
+    @media (max-width:760px) { .sidebar { position:fixed; inset:0 auto 0 0; width:min(286px,84vw); min-height:100dvh; transform:translateX(-102%); } .sidebar.is-open { transform:translateX(0); } .scrim { position:fixed; inset:0; z-index:3; display:block; background:rgba(18,28,39,.42); opacity:0; pointer-events:none; transition:opacity .2s ease; } .scrim.is-visible { opacity:1; pointer-events:auto; } .menu-toggle { display:grid; } .topbar { min-height:66px; padding:11px 18px; } .crumb { font-size:11px; } .language-wrap > span { display:none; } .language-select { min-width:105px; } main { padding:30px 18px 25px; } .page-footer { flex-direction:column; gap:5px; } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior:auto !important; transition-duration:.01ms !important; animation-duration:.01ms !important; } }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar" aria-label="Main sidebar">
+      <div class="sidebar-cover">
+        <div class="brand-top">
+          <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 19.5V8.8L12 3l8 5.8v10.7h-5.3v-6.2H9.3v6.2H4Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M8 10.5h.01M16 10.5h.01" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"/></svg></span>
+          <span class="brand-name" data-i18n="brand">Beit Mellat</span>
+        </div>
+        <div class="profile-block">
+          <div class="profile-mark" aria-hidden="true">BM</div>
+          <h1 data-i18n="sidebarTitle">Beit Mellat</h1>
+          <p data-i18n="sidebarTagline">A place for family connections</p>
+        </div>
+      </div>
+      <nav class="sidebar-nav" aria-label="Primary navigation">
+        <p class="nav-caption" data-i18n="menuCaption">Menu</p>
+        <ul class="nav-list">
+          <li><button class="nav-link" type="button" data-nav="home"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg></span><span class="nav-label" data-i18n="home">Home</span><svg class="nav-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></li>
+          <li><button class="nav-link" type="button" data-nav="directory"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.2 4.2"/></svg></span><span class="nav-label" data-i18n="directory">Directory</span><svg class="nav-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></li>
+          <li><button class="nav-link" type="button" data-nav="import"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V4m0 0L7.5 8.5M12 4l4.5 4.5"/><path d="M5 14.5v4A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5v-4"/></svg></span><span class="nav-label" data-i18n="import">Import Data</span><svg class="nav-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></li>
+          <li><button class="nav-link" type="button" data-nav="business-directory"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="m16 21 4-4M4 9l16-2"/></svg></span><span class="nav-label">Business Directory</span><svg class="nav-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></li>
+          <li><button class="nav-link" type="button" data-nav="contact"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="14" rx="2"/><path d="m4.5 7 7.5 5.8L19.5 7"/></svg></span><span class="nav-label" data-i18n="contact">Contact Admin</span><svg class="nav-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></li>
+          <li><button class="nav-link" type="button" data-nav="backup" aria-current="page"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v12H4zM8 20h8M12 16v4"/></svg></span><span class="nav-label" data-i18n="backup">Backup & Restore</span><svg class="nav-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></li>
+<li><button class="nav-link" type="button" data-nav="users"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="nav-label">Users</span><svg class="nav-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></li>
+          <li><button class="nav-link" type="button" data-nav="inbox"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="5" width="22" height="14" rx="2"/><path d="M12 11l3 2M7.5 11l4.5 3"/></svg></span><span class="nav-label" data-i18n="inbox">Inbox</span><svg class="nav-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></li>
+          <li><button class="nav-link" type="button" data-nav="logout" aria-label="Free, reserved menu item two"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7.5h16M6 7.5V19h12V7.5M9 7.5V5h6v2.5M9.5 11v4.5M14.5 11v4.5"/></svg></span><span class="nav-label" data-i18n="logout">Logout</span><svg class="nav-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></li>
+        </ul>
+      </nav>
+      <div class="sidebar-foot"><span data-i18n="sideFoot">Directory workspace</span><span>HerWebDB</span></div>
+    </aside>
+    <button class="scrim" id="scrim" type="button" aria-label="Close navigation"></button>
+
+    <div class="main-column">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="menu-toggle" id="menuToggle" type="button" aria-label="Open navigation" aria-controls="sidebar" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+          <div class="crumb"><span data-i18n="breadcrumbHome">Home</span><span class="crumb-dot" aria-hidden="true"></span><strong data-i18n="breadcrumbDirectory">Backup</strong></div>
+        </div>
+        <label class="language-wrap" for="languageSelect">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3.5 9h17M3.5 15h17M12 3c2.2 2.4 3.2 5.4 3.2 9s-1 6.6-3.2 9c-2.2-2.4-3.2-5.4-3.2-9s1-6.6 3.2-9Z"/></svg>
+          <span data-i18n="languageLabel">Language</span>
+          <select class="language-select" id="languageSelect" aria-label="Select display language">
+            <option value="en">EN · English</option>
+            <option value="fr">FR · Français</option>
+            <option value="es">SP · Español</option>
+            <option value="pt">PT · Português</option>
+          </select>
+        </label>
+      </header>
+
+      <main>
+        <h1 class="page-heading" data-i18n="pageTitle">Backup & Restore</h1>
+        <p class="lead" data-i18n="pageLead">Download a copy of the database, or restore from a previous backup.</p>
+
+        <div class="card">
+          <h2 data-i18n="backupTitle">Backup</h2>
+          <p data-i18n="backupHint">Download the current database as a .sqlite file.</p>
+          <button class="btn" id="backupBtn" data-i18n="backupBtn">Download backup</button>
+          <div class="result" id="result"></div>
+        </div>
+
+        <div class="card">
+          <h2 data-i18n="restoreTitle">Restore</h2>
+          <p data-i18n="restoreHint">Upload a .sqlite backup to replace the current database. This overwrites all current data.</p>
+          <div class="dropzone">
+            <input type="file" id="fileInput" accept=".sqlite,.db" />
+            <label for="fileInput" data-i18n="chooseFile">Choose file</label>
+            <div id="fileName" style="margin-top:8px;font-size:12px;color:#8390a0;"></div>
+          </div>
+          <button class="btn" id="restoreBtn" data-i18n="restoreBtn">Restore</button>
+          <div class="result" id="result2"></div>
+        </div>
+
+        <footer class="page-footer"><span data-i18n="footerLeft">HerWebDB · Backup</span><span data-i18n="footerRight">English is the default display language.</span></footer>
+      </main>
+    </div>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    (() => {
+      const originalFetch = window.fetch;
+      window.fetch = function(url, options) {
+        options = options || {};
+        if (!options.credentials) options.credentials = 'include';
+        return originalFetch(url, options);
+      };
+      fetch('/api/me').then(r=>{
+        if(!r.ok){ window.location.href='login.html'; return null; }
+        return r.json();
+      }).then(data=>{
+        if(!data || !data.user){ window.location.href='login.html'; return; }
+        if(data.mustChange){ window.location.href='change-password.html'; return; }
+        if(data.user.status !== 'confirmed'){ window.location.href='login.html?waiting=1'; return; }
+        if(data.user.role !== 'admin'){ window.location.href='directory.html'; return; }
+        document.querySelector('[data-nav="contact"]').parentElement.style.display='none';
+        const wrap = document.querySelector('.language-wrap');
+        if(wrap){ const span=document.createElement('span'); span.style.cssText='font-size:11px;color:#778496;margin-right:6px;'; span.textContent=data.user.username; wrap.parentNode.insertBefore(span, wrap); }
+      }).catch(()=>{ window.location.href='login.html'; });
+      const copy = {
+        en: { brand:"Beit Mellat", sidebarTitle:"Beit Mellat", sidebarTagline:"A place for family connections", menuCaption:"Menu", home:"Home", directory:"Directory", import:"Import Data", contact:"Contact Admin", backup:"Backup & Restore", free:"Free", sideFoot:"Directory workspace", breadcrumbHome:"Home", breadcrumbDirectory:"Backup", languageLabel:"Language", pageTitle:"Backup & Restore", pageLead:"Download a copy of the database, or restore from a previous backup.", backupTitle:"Backup", backupHint:"Download the current database as a .sql file.", backupBtn:"Download backup", restoreTitle:"Restore", restoreHint:"Upload a .sql backup to replace the current database. This overwrites all current data.", chooseFile:"Choose file", restoreBtn:"Restore", footerLeft:"HerWebDB · Backup", footerRight:"English is the default display language.", navMessage:"This section will be connected in a later project step." },
+        fr: { brand:"Beit Mellat", sidebarTitle:"Beit Mellat", sidebarTagline:"Un espace pour les liens familiaux", menuCaption:"Menu", home:"Accueil", directory:"Annuaire", import:"Importer des données", contact:"Contacter l'administrateur", backup:"Sauvegarde et restauration", free:"Free", sideFoot:"Espace de l'annuaire", breadcrumbHome:"Accueil", breadcrumbDirectory:"Sauvegarde", languageLabel:"Langue", pageTitle:"Sauvegarde et restauration", pageLead:"Téléchargez une copie de la base ou restaurez depuis une sauvegarde.", backupTitle:"Sauvegarde", backupHint:"Téléchargez la base actuelle au format .sql.", backupBtn:"Télécharger la sauvegarde", restoreTitle:"Restauration", restoreHint:"Téléversez une sauvegarde .sql pour remplacer la base actuelle. Cela écrase toutes les données.", chooseFile:"Choisir un fichier", restoreBtn:"Restaurer", footerLeft:"HerWebDB · Sauvegarde", footerRight:"L'anglais est la langue d'affichage par défaut.", navMessage:"Cette section sera reliée lors d'une prochaine étape." },
+        es: { brand:"Beit Mellat", sidebarTitle:"Beit Mellat", sidebarTagline:"Un espacio para conectar a la familia", menuCaption:"Menú", home:"Inicio", directory:"Directorio", import:"Importar datos", contact:"Contactar al administrador", backup:"Respaldo y restauración", free:"Free", sideFoot:"Espacio del directorio", breadcrumbHome:"Inicio", breadcrumbDirectory:"Respaldo", languageLabel:"Idioma", pageTitle:"Respaldo y restauración", pageLead:"Descargue una copia de la base o restaure desde un respaldo.", backupTitle:"Respaldo", backupHint:"Descargue la base actual en formato .sql.", backupBtn:"Descargar respaldo", restoreTitle:"Restauración", restoreHint:"Suba un respaldo .sql para reemplazar la base actual. Esto sobrescribe todos los datos.", chooseFile:"Elegir archivo", restoreBtn:"Restaurar", footerLeft:"HerWebDB · Respaldo", footerRight:"El idioma predeterminado es inglés.", navMessage:"Esta sección se conectará en una etapa posterior." },
+        pt: { brand:"Beit Mellat", sidebarTitle:"Beit Mellat", sidebarTagline:"Um espaço para aproximar a família", menuCaption:"Menu", home:"Início", directory:"Diretório", import:"Importar dados", contact:"Contactar o administrador", backup:"Backup e restauração", free:"Free", sideFoot:"Área do diretório", breadcrumbHome:"Início", breadcrumbDirectory:"Backup", languageLabel:"Idioma", pageTitle:"Backup e restauração", pageLead:"Baixe uma cópia da base ou restaure de um backup.", backupTitle:"Backup", backupHint:"Baixe a base atual em formato .sql.", backupBtn:"Baixar backup", restoreTitle:"Restauração", restoreHint:"Envie um backup .sql para substituir a base atual. Isso sobrescreve todos os dados.", chooseFile:"Escolher arquivo", restoreBtn:"Restaurar", footerLeft:"HerWebDB · Backup", footerRight:"O inglês é o idioma de exibição padrão.", navMessage:"Esta seção será conectada em uma etapa posterior." }
+      };
+      const selector = document.getElementById("languageSelect");
+      const toast = document.getElementById("toast");
+      const sidebar = document.getElementById("sidebar");
+      const toggle = document.getElementById("menuToggle");
+      const scrim = document.getElementById("scrim");
+      const backupBtn = document.getElementById("backupBtn");
+      const fileInput = document.getElementById("fileInput");
+      const fileName = document.getElementById("fileName");
+      const restoreBtn = document.getElementById("restoreBtn");
+      const result = document.getElementById("result");
+      const result2 = document.getElementById("result2");
+      let toastTimer;
+
+      function setLanguage(language){ const selected = copy[language]?language:"en"; document.documentElement.lang=selected; document.title=copy[selected].brand; document.querySelectorAll("[data-i18n]").forEach(el=>{const k=el.dataset.i18n; if(copy[selected][k]) el.textContent=copy[selected][k];}); selector.value=selected; try{localStorage.setItem("herwebdb-language",selected);}catch(_){} }
+      function closeMenu(){ sidebar.classList.remove("is-open"); scrim.classList.remove("is-visible"); toggle.setAttribute("aria-expanded","false"); }
+      function showToast(msg){ toast.textContent=msg; toast.classList.add("is-visible"); window.clearTimeout(toastTimer); toastTimer=window.setTimeout(()=>toast.classList.remove("is-visible"),2400); }
+      function showResult(el,msg,isError){ el.textContent=msg; el.classList.add("show"); el.classList.toggle("error", !!isError); }
+      selector.addEventListener("change", e=>setLanguage(e.target.value));
+      document.querySelectorAll("[data-nav]").forEach(item=>item.addEventListener("click", ()=>{
+        const nav = item.dataset.nav;
+        const pages = { home:"index.html", directory:"directory.html", import:"import.html", backup:"backup.html", users:"users.html", inbox:"inbox.html", "business-directory":"business-directory.html" };
+        if (nav === 'logout') { fetch('/api/logout',{method:'POST'}).finally(()=>{ window.location.href='index.html'; }); return; }
+        if (pages[nav]) { window.location.href = pages[nav]; return; }
+        document.querySelectorAll("[data-nav]").forEach(n => n.removeAttribute("aria-current"));
+        item.setAttribute("aria-current","page");
+        showToast(copy[selector.value].navMessage);
+        closeMenu();
+      }));
+      toggle.addEventListener("click", ()=>{ const open=sidebar.classList.toggle("is-open"); scrim.classList.toggle("is-visible",open); toggle.setAttribute("aria-expanded",String(open)); });
+      scrim.addEventListener("click", closeMenu);
+      document.addEventListener("keydown", e=>{ if(e.key==="Escape") closeMenu(); });
+
+      backupBtn.addEventListener("click", ()=>{ window.location.href = "/api/backup"; });
+      fileInput.addEventListener("change", ()=>{ fileName.textContent = fileInput.files[0]?fileInput.files[0].name:""; });
+      restoreBtn.addEventListener("click", async ()=>{
+        if(!fileInput.files[0]){ showResult(result2,"Please choose a file first.",true); return; }
+        if(!confirm("Restore will overwrite all current data. Continue?")) return;
+        const fd = new FormData(); fd.append("file", fileInput.files[0]);
+        try {
+          const res = await fetch("/api/restore", { method:"POST", body:fd });
+          const data = await res.json();
+          if(!res.ok) throw new Error(data.error||"Restore failed");
+          showResult(result2,"Database restored successfully.");
+        } catch(err){ showResult(result2,err.message,true); }
+      });
+
+      let initialLanguage="en"; try{ initialLanguage=localStorage.getItem("herwebdb-language")||"en"; }catch(_){}
+      setLanguage(initialLanguage);
+    })();
+  </script>
+</body>
+</html>

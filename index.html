@@ -1,0 +1,578 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#32373d">
+  <title>Beit Mellat</title>
+  <style>
+    @font-face {
+      font-family: Poppins;
+      src: url("bootstrap-sidebar-09/fonts/poppins-400-latin.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: Poppins;
+      src: url("bootstrap-sidebar-09/fonts/poppins-500-latin.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 500;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: Poppins;
+      src: url("bootstrap-sidebar-09/fonts/poppins-600-latin.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 600;
+      font-display: swap;
+    }
+    :root {
+      color-scheme: light;
+      --ink: #202b38;
+      --muted: #718094;
+      --blue: #2f89fc;
+      --blue-deep: #1f6fd1;
+      --sidebar: #32373d;
+      --line: #e8edf3;
+      --surface: #ffffff;
+      --canvas: #dbe2ec;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      min-width: 320px;
+      margin: 0;
+      background: var(--canvas);
+      color: var(--ink);
+      font-family: Poppins, "Segoe UI", Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    button, select { font: inherit; }
+    button:focus-visible, select:focus-visible, a:focus-visible {
+      outline: 3px solid rgba(47,137,252,.46);
+      outline-offset: 3px;
+    }
+    .app-shell { min-height: 100vh; display: flex; }
+    .sidebar {
+      position: relative;
+      z-index: 4;
+      display: flex;
+      flex: 0 0 286px;
+      flex-direction: column;
+      min-height: 100vh;
+      overflow: hidden;
+      background: var(--sidebar);
+      color: #fff;
+      box-shadow: 8px 0 28px rgba(26, 39, 53, .08);
+      transition: transform .25s ease;
+    }
+    .sidebar-cover {
+      position: relative;
+      min-height: 214px;
+      padding: 24px 24px 22px;
+      overflow: hidden;
+      background:
+        radial-gradient(ellipse at 82% 2%, rgba(117, 191, 255, .62), transparent 34%),
+        radial-gradient(ellipse at 16% 100%, rgba(46, 137, 252, .74), transparent 42%),
+        linear-gradient(142deg, #20384f 0%, #28619a 50%, #3d9af3 100%);
+    }
+    .sidebar-cover::before, .sidebar-cover::after {
+      position: absolute;
+      content: "";
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .sidebar-cover::before { width: 260px; height: 260px; right: -145px; top: -125px; }
+    .sidebar-cover::after { width: 180px; height: 180px; right: -86px; top: -84px; }
+    .brand-top { position: relative; display: flex; align-items: center; gap: 10px; z-index: 1; }
+    .brand-mark {
+      display: grid;
+      width: 34px;
+      height: 34px;
+      place-items: center;
+      border: 1px solid rgba(255,255,255,.4);
+      border-radius: 11px;
+      background: rgba(255,255,255,.15);
+      color: white;
+    }
+    .brand-mark svg { width: 19px; height: 19px; }
+    .brand-name { font-size: 12px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; }
+    .profile-block { position: relative; z-index: 1; margin-top: 27px; text-align: center; }
+    .profile-mark {
+      display: grid;
+      width: 68px;
+      height: 68px;
+      margin: 0 auto 10px;
+      place-items: center;
+      border: 3px solid rgba(255,255,255,.9);
+      border-radius: 50%;
+      background: rgba(255,255,255,.18);
+      box-shadow: 0 5px 18px rgba(13,54,96,.18);
+      font-size: 21px;
+      font-weight: 500;
+      letter-spacing: .05em;
+    }
+    .profile-block h1 { margin: 0; color: #fff; font-size: 24px; font-weight: 600; line-height: 1.3; }
+    .profile-block p { margin: 4px 0 0; color: rgba(255,255,255,.78); font-size: 11px; letter-spacing: .035em; }
+    .sidebar-nav { padding: 18px 14px 14px; }
+    .nav-caption { margin: 0 12px 8px; color: rgba(255,255,255,.46); font-size: 10px; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; }
+    .nav-list { display: grid; gap: 5px; margin: 0; padding: 0; list-style: none; }
+    .nav-link {
+      display: flex;
+      width: 100%;
+      min-height: 47px;
+      align-items: center;
+      gap: 13px;
+      padding: 10px 12px;
+      border: 1px solid transparent;
+      border-radius: 9px;
+      background: transparent;
+      color: rgba(255,255,255,.72);
+      text-align: left;
+      cursor: pointer;
+      transition: background .18s ease, color .18s ease, border-color .18s ease;
+    }
+    .nav-link:hover { background: rgba(255,255,255,.075); color: #fff; }
+    .nav-link[aria-current="page"] {
+      border-color: rgba(255,255,255,.1);
+      background: linear-gradient(95deg, rgba(47,137,252,.27), rgba(47,137,252,.11));
+      color: #fff;
+      box-shadow: inset 3px 0 0 var(--blue);
+    }
+    .nav-icon { display: grid; width: 20px; height: 20px; flex: 0 0 20px; place-items: center; color: currentColor; }
+    .nav-icon svg { width: 18px; height: 18px; stroke: currentColor; }
+    .nav-label { flex: 1; font-size: 13px; font-weight: 400; }
+    .nav-arrow { width: 15px; height: 15px; color: rgba(255,255,255,.36); }
+    .sidebar-foot { margin-top: auto; padding: 15px 20px 18px; border-top: 1px solid rgba(255,255,255,.08); color: rgba(255,255,255,.5); font-size: 10px; }
+    .sidebar-foot span { display: block; }
+    .main-column { display: flex; min-width: 0; flex: 1; flex-direction: column; }
+    .topbar {
+      display: flex;
+      min-height: 76px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 14px clamp(22px, 4vw, 52px);
+      border-bottom: 1px solid var(--line);
+      background: rgba(255,255,255,.88);
+    }
+    .topbar-left { display: flex; align-items: center; gap: 14px; }
+    .crumb { display: flex; align-items: center; gap: 9px; color: #8995a5; font-size: 12px; }
+    .crumb strong { color: #394657; font-weight: 500; }
+    .crumb-dot { width: 4px; height: 4px; border-radius: 50%; background: #aeb9c6; }
+    .language-wrap { display: flex; align-items: center; gap: 9px; color: #778496; font-size: 11px; }
+    .language-wrap svg { width: 16px; height: 16px; stroke: #7e8a9a; }
+    .language-select {
+      min-width: 130px;
+      padding: 8px 30px 8px 11px;
+      border: 1px solid #e1e7ef;
+      border-radius: 8px;
+      background: #fff;
+      color: #344254;
+      cursor: pointer;
+    }
+    .menu-toggle {
+      display: none;
+      width: 38px;
+      height: 38px;
+      place-items: center;
+      border: 1px solid #e1e7ef;
+      border-radius: 9px;
+      background: #fff;
+      color: #354254;
+      cursor: pointer;
+    }
+    .menu-toggle svg { width: 19px; height: 19px; stroke: currentColor; }
+    main { width: 100%; max-width: 1330px; margin: 0 auto; padding: clamp(26px, 4.5vw, 58px) clamp(22px, 4vw, 52px) 38px; }
+    .welcome-line { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 12px; color: var(--blue-deep); font-size: 10px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; }
+    .welcome-line::before { width: 18px; height: 2px; content: ""; border-radius: 2px; background: var(--blue); }
+    .page-heading { max-width: 710px; margin: 0; color: #202b38; font-size: clamp(30px, 4vw, 43px); font-weight: 500; letter-spacing: -.045em; line-height: 1.18; }
+    .lead { max-width: 650px; margin: 15px 0 0; color: #748195; font-size: 14px; line-height: 1.8; }
+    .hero-card {
+      position: relative;
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(190px, .6fr);
+      gap: 24px;
+      align-items: center;
+      margin-top: 34px;
+      padding: clamp(22px, 3.2vw, 34px);
+      overflow: hidden;
+      border: 1px solid #e8edf3;
+      border-radius: 15px;
+      background: var(--surface);
+      box-shadow: 0 12px 36px rgba(36,58,85,.045);
+    }
+    .hero-card::after { position: absolute; top: -90px; right: -80px; width: 260px; height: 260px; border: 1px solid #e7f1ff; border-radius: 50%; content: ""; pointer-events: none; }
+    .hero-copy, .directory-symbol { position: relative; z-index: 1; }
+    .hero-copy h2 { max-width: 520px; margin: 0; color: #253244; font-size: clamp(20px, 2.5vw, 25px); font-weight: 500; letter-spacing: -.025em; line-height: 1.35; }
+    .hero-copy p { max-width: 575px; margin: 12px 0 0; color: #718094; font-size: 13px; line-height: 1.8; }
+    .directory-symbol {
+      display: grid;
+      width: min(100%, 180px);
+      aspect-ratio: 1;
+      justify-self: center;
+      place-items: center;
+      border: 1px solid #dcecff;
+      border-radius: 50%;
+      background: radial-gradient(circle at 50% 44%, #fff 0 29%, #f1f7ff 30% 59%, #e6f1ff 60% 100%);
+      color: #3185e7;
+    }
+    .directory-symbol svg { width: 70px; height: 70px; stroke: currentColor; stroke-width: 1.3; }
+    .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 20px; margin: 39px 0 15px; }
+    .section-heading h2 { margin: 0; color: #2a3646; font-size: 16px; font-weight: 500; }
+    .section-heading p { margin: 0; color: #96a1af; font-size: 11px; }
+    .info-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 13px; }
+    .info-card {
+      min-height: 157px;
+      padding: 19px 18px 17px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      transition: transform .18s ease, box-shadow .18s ease;
+    }
+    .info-card:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(36,58,85,.06); }
+    .info-icon { display: grid; width: 35px; height: 35px; margin-bottom: 13px; place-items: center; border-radius: 10px; background: #eef6ff; color: #3185e7; }
+    .info-icon svg { width: 18px; height: 18px; stroke: currentColor; }
+    .info-card h3 { margin: 0; color: #344255; font-size: 12px; font-weight: 500; }
+    .info-card p { margin: 7px 0 0; color: #8390a0; font-size: 11px; line-height: 1.65; }
+    .village-card { background:#fff; border:1px solid var(--line); border-radius:15px; padding:clamp(20px,3vw,30px); box-shadow:0 12px 36px rgba(36,58,85,.045); }
+    .village-card p { margin:0 0 18px; color:#718094; font-size:14px; line-height:1.8; max-width:760px; }
+    .stats-grid { display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:12px; }
+    .stat-card { padding:16px 14px; border:1px solid var(--line); border-radius:12px; background:#f7fafd; text-align:center; }
+    .stat-value { display:block; color:#253244; font-size:22px; font-weight:600; letter-spacing:-.02em; }
+    .stat-label { display:block; margin-top:4px; color:#8390a0; font-size:11px; text-transform:uppercase; letter-spacing:.12em; }
+    .bottom-note {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-top: 23px;
+      padding: 15px 17px;
+      border: 1px solid #dcecff;
+      border-radius: 10px;
+      background: #f3f8ff;
+      color: #536a84;
+      font-size: 11px;
+      line-height: 1.7;
+    }
+    .bottom-note svg { width: 17px; height: 17px; flex: 0 0 17px; margin-top: 1px; stroke: #3286e8; }
+    .bottom-note strong { color: #334c69; font-weight: 500; }
+    .page-footer { display: flex; justify-content: space-between; gap: 16px; margin-top: 33px; padding-top: 16px; border-top: 1px solid var(--line); color: #9aa5b2; font-size: 10px; }
+    .toast {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      z-index: 10;
+      max-width: min(360px, calc(100vw - 36px));
+      padding: 12px 16px;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 10px;
+      background: #283545;
+      color: #fff;
+      box-shadow: 0 12px 30px rgba(18,32,49,.22);
+      opacity: 0;
+      transform: translateY(8px);
+      pointer-events: none;
+      transition: opacity .2s ease, transform .2s ease;
+      font-size: 12px;
+    }
+    .toast.is-visible { opacity: 1; transform: translateY(0); }
+    .scrim { display: none; }
+    @media (max-width: 980px) {
+      .sidebar { flex-basis: 250px; }
+      .hero-card { grid-template-columns: minmax(0, 1fr) 150px; }
+      .directory-symbol { width: 145px; }
+      .info-grid { gap: 10px; }
+    }
+    @media (max-width: 760px) {
+      .sidebar { position: fixed; inset: 0 auto 0 0; width: min(286px, 84vw); min-height: 100dvh; transform: translateX(-102%); }
+      .sidebar.is-open { transform: translateX(0); }
+      .scrim { position: fixed; inset: 0; z-index: 3; display: block; background: rgba(18,28,39,.42); opacity: 0; pointer-events: none; transition: opacity .2s ease; }
+      .scrim.is-visible { opacity: 1; pointer-events: auto; }
+      .menu-toggle { display: grid; }
+      .topbar { min-height: 66px; padding: 11px 18px; }
+      .crumb { font-size: 11px; }
+      .language-wrap > span { display: none; }
+      .language-select { min-width: 105px; }
+      main { padding: 30px 18px 25px; }
+      .hero-card { grid-template-columns: minmax(0, 1fr) 100px; gap: 12px; padding: 20px; }
+      .directory-symbol { width: 96px; }
+      .directory-symbol svg { width: 48px; height: 48px; }
+      .info-grid { grid-template-columns: 1fr; }
+      .info-card { min-height: unset; }
+      .info-icon { float: left; margin: 0 13px 0 0; }
+      .info-card h3 { padding-top: 1px; }
+      .info-card p { margin-top: 4px; }
+      .stats-grid { grid-template-columns:repeat(2, 1fr); }
+      .page-footer { flex-direction: column; gap: 5px; }
+    }
+    @media (max-width: 450px) {
+      .hero-card { grid-template-columns: 1fr; }
+      .directory-symbol { display: none; }
+      .section-heading { align-items: flex-start; flex-direction: column; gap: 4px; }
+      .page-heading { font-size: 31px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar" aria-label="Main sidebar">
+      <div class="sidebar-cover">
+        <div class="brand-top">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M4 19.5V8.8L12 3l8 5.8v10.7h-5.3v-6.2H9.3v6.2H4Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M8 10.5h.01M16 10.5h.01" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"/></svg>
+          </span>
+          <span class="brand-name" data-i18n="brand">Beit Mellat</span>
+        </div>
+        <div class="profile-block">
+          <div class="profile-mark" aria-hidden="true">BM</div>
+          <h1 data-i18n="sidebarTitle">Beit Mellat</h1>
+          <p data-i18n="sidebarTagline">A place for family connections</p>
+        </div>
+      </div>
+      <nav class="sidebar-nav" aria-label="Primary navigation">
+        <p class="nav-caption" data-i18n="menuCaption">Menu</p>
+        <ul class="nav-list">
+          <li><button class="nav-link" type="button" data-nav="search" aria-current="page">
+            <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.2 4.2"/></svg></span><span class="nav-label" data-i18n="search">Directory</span><svg class="nav-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button></li>
+          <li><button class="nav-link" type="button" data-nav="import">
+            <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V4m0 0L7.5 8.5M12 4l4.5 4.5"/><path d="M5 14.5v4A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5v-4"/></svg></span><span class="nav-label" data-i18n="import">Import Data</span><svg class="nav-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button></li>
+          <li><button class="nav-link" type="button" data-nav="business-directory"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="m16 21 4-4M4 9l16-2"/></svg></span><span class="nav-label" data-i18n="business-directory">Business Directory</span><svg class="nav-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></li>
+          <li><button class="nav-link" type="button" data-nav="contact">
+            <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="14" rx="2"/><path d="m4.5 7 7.5 5.8L19.5 7"/></svg></span><span class="nav-label" data-i18n="contact">Contact Admin</span><svg class="nav-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button></li>
+          <li><button class="nav-link" type="button" data-nav="backup"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v12H4zM8 20h8M12 16v4"/></svg></span><span class="nav-label" data-i18n="backup">Backup & Restore</span><svg class="nav-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></li>
+<li><button class="nav-link" type="button" data-nav="users"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="nav-label">Users</span><svg class="nav-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></li>
+          <li><button class="nav-link" type="button" data-nav="inbox"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="5" width="22" height="14" rx="2"/><path d="M12 11l3 2M7.5 11l4.5 3"/></svg></span><span class="nav-label" data-i18n="inbox">Inbox</span><svg class="nav-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></li>
+          <li><button class="nav-link" type="button" data-nav="logout" aria-label="Free, reserved menu item two">
+            <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7.5h16M6 7.5V19h12V7.5M9 7.5V5h6v2.5M9.5 11v4.5M14.5 11v4.5"/></svg></span><span class="nav-label" data-i18n="logout">Logout</span><svg class="nav-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button></li>
+        </ul>
+      </nav>
+      <div class="sidebar-foot"><span data-i18n="sideFoot">Directory workspace</span><span>HerWebDB</span></div>
+    </aside>
+    <button class="scrim" id="scrim" type="button" aria-label="Close navigation"></button>
+
+    <div class="main-column">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="menu-toggle" id="menuToggle" type="button" aria-label="Open navigation" aria-controls="sidebar" aria-expanded="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+          </button>
+          <div class="crumb"><span data-i18n="breadcrumbHome">Home</span><span class="crumb-dot" aria-hidden="true"></span><strong data-i18n="breadcrumbDirectory">Directory</strong></div>
+        </div>
+        <label class="language-wrap" for="languageSelect">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3.5 9h17M3.5 15h17M12 3c2.2 2.4 3.2 5.4 3.2 9s-1 6.6-3.2 9c-2.2-2.4-3.2-5.4-3.2-9s1-6.6 3.2-9Z"/></svg>
+          <span data-i18n="languageLabel">Language</span>
+          <select class="language-select" id="languageSelect" aria-label="Select display language">
+            <option value="en">EN · English</option>
+            <option value="fr">FR · Français</option>
+            <option value="es">SP · Español</option>
+            <option value="pt">PT · Português</option>
+          </select>
+        </label>
+      </header>
+
+      <main id="home">
+        <div class="welcome-line" data-i18n="eyebrow">Beit Mellat</div>
+        <h1 class="page-heading" data-i18n="pageTitle">Find your family, all in one place.</h1>
+        <p class="lead" data-i18n="pageLead">A shared directory for family details and connections. Families provide their information in a spreadsheet, and the administrator adds approved data to the directory.</p>
+
+        <section class="hero-card" aria-labelledby="welcomeTitle">
+          <div class="hero-copy">
+            <h2 id="welcomeTitle" data-i18n="welcomeTitle">A simple way to stay connected.</h2>
+            <p data-i18n="welcomeCopy">The directory brings family information together in one place. Start with a family-submitted sheet; the administrator reviews and uploads it for everyone to use.</p>
+          </div>
+          <div class="directory-symbol" aria-hidden="true">
+            <svg viewBox="0 0 72 72" fill="none"><circle cx="36" cy="22" r="9"/><path d="M19 56c1.5-10.2 7.7-15.3 17-15.3S51.5 45.8 53 56" stroke-linecap="round"/><circle cx="16" cy="31" r="6.2"/><path d="M5 53c1-7.3 4.8-11 11-11 2.4 0 4.4.6 6 1.8" stroke-linecap="round"/><circle cx="56" cy="31" r="6.2"/><path d="M67 53c-1-7.3-4.8-11-11-11-2.4 0-4.4.6-6 1.8" stroke-linecap="round"/></svg>
+          </div>
+        </section>
+
+        <div class="section-heading">
+          <h2 data-i18n="villageTitle">Our village</h2>
+          <p data-i18n="villageHint">A few facts about our community</p>
+        </div>
+        <section class="village-card" aria-labelledby="villageTitle2">
+          <p data-i18n="villageDescription">Our village is a close-knit community where families have lived for generations. This directory brings together the people who make it home.</p>
+          <div class="stats-grid">
+            <div class="stat-card"><span class="stat-value">4,000</span><span class="stat-label" data-i18n="statPopulation">Population</span></div>
+            <div class="stat-card"><span class="stat-value">2,644</span><span class="stat-label" data-i18n="statVoters">Voters</span></div>
+            <div class="stat-card"><span class="stat-value">2.66 km²</span><span class="stat-label" data-i18n="statArea">Area</span></div>
+            <div class="stat-card"><span class="stat-value">550 m</span><span class="stat-label" data-i18n="statAltitude">Altitude</span></div>
+          </div>
+        </section>
+
+        <div class="section-heading">
+          <h2 data-i18n="sectionTitle">How the directory works</h2>
+          <p data-i18n="sectionHint">A clear process for every family</p>
+        </div>
+        <section class="info-grid" aria-label="Directory process">
+          <article class="info-card">
+            <div class="info-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M16 20v-1.8a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4V20M9 10a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM17 11a3.5 3.5 0 1 0 0-7M22 20v-1.8a4 4 0 0 0-3-3.9"/></svg></div>
+            <h3 data-i18n="cardOneTitle">Family information</h3>
+            <p data-i18n="cardOneCopy">Each family prepares its own sheet with the details it wants included.</p>
+          </article>
+          <article class="info-card">
+            <div class="info-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3m0 0L7.5 7.5M12 3l4.5 4.5"/><path d="M5 14v4.5A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5V14"/></svg></div>
+            <h3 data-i18n="cardTwoTitle">Admin-managed import</h3>
+            <p data-i18n="cardTwoCopy">The administrator collects the sheets and uploads the approved information.</p>
+          </article>
+          <article class="info-card">
+            <div class="info-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.2 4.2M8 10.8h5.6M10.8 8v5.6"/></svg></div>
+            <h3 data-i18n="cardThreeTitle">Search when ready</h3>
+            <p data-i18n="cardThreeCopy">Once the first records are added, the directory can be searched by the information you provide.</p>
+          </article>
+        </section>
+
+        <div class="bottom-note" role="note">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
+          <div><strong data-i18n="noteLead">Directory records will appear after the first approved import.</strong> <span data-i18n="noteCopy">No personal records are shown on this first home page.</span></div>
+        </div>
+
+        <footer class="page-footer"><span data-i18n="footerLeft">HerWebDB · Home</span><span data-i18n="footerRight">English is the default display language.</span></footer>
+      </main>
+    </div>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    (() => {
+      const originalFetch = window.fetch;
+      window.fetch = function(url, options) {
+        options = options || {};
+        if (!options.credentials) options.credentials = 'include';
+        return originalFetch(url, options);
+      };
+      let isLoggedIn = false;
+      fetch('/api/me').then(r=>{
+        if(!r.ok){ 
+          document.querySelectorAll('[data-nav="import"], [data-nav="backup"], [data-nav="users"], [data-nav="inbox"]').forEach(el=>{ if(el.parentElement) el.parentElement.style.display='none'; });
+          // show sign-in link
+          const wrap = document.querySelector('.language-wrap');
+          if(wrap && !document.getElementById('signinLink')){ const a=document.createElement('a'); a.id='signinLink'; a.href='login.html'; a.textContent='Sign in'; a.style.cssText='font-size:12px;color:#1f6fd1;margin-right:8px;text-decoration:none;'; wrap.parentNode.insertBefore(a, wrap); const reg=document.createElement('a'); reg.id='registerLink'; reg.href='register.html'; reg.textContent='Register'; reg.style.cssText='font-size:12px;color:#1f6fd1;text-decoration:none;'; wrap.parentNode.insertBefore(reg, wrap.nextSibling); }
+          return null;
+        }
+        return r.json();
+      }).then(data=>{
+        if(!data || !data.user) return;
+        if(data.mustChange){ window.location.href='change-password.html'; return; }
+        if(data.user.status !== 'confirmed'){ window.location.href='login.html?waiting=1'; return; }
+        isLoggedIn = true;
+        const isAdmin = data.user.role === 'admin';
+        document.querySelectorAll('[data-nav="import"], [data-nav="backup"], [data-nav="users"], [data-nav="inbox"]').forEach(el=>{ if(!isAdmin && el.parentElement) el.parentElement.style.display='none'; });
+        if(isAdmin){ document.querySelector('[data-nav="contact"]').parentElement.style.display='none'; }
+        const wrap = document.querySelector('.language-wrap');
+        if(wrap && !document.getElementById('userLabel')){ const span=document.createElement('span'); span.id='userLabel'; span.style.cssText='font-size:11px;color:#778496;margin-right:6px;'; span.textContent=data.user.username; wrap.parentNode.insertBefore(span, wrap);
+          const a=document.createElement('a'); a.href='#'; a.textContent='Logout'; a.style.cssText='font-size:12px;color:#1f6fd1;margin-right:8px;text-decoration:none;'; a.addEventListener('click', async e=>{ e.preventDefault(); await fetch('/api/logout',{method:'POST'}); window.location.href='index.html'; }); wrap.parentNode.insertBefore(a, wrap);
+        }
+      }).catch(()=>{});
+      const copy = {
+        en: {
+          brand: "Beit Mellat", sidebarTitle: "Beit Mellat", sidebarTagline: "A place for family connections", menuCaption: "Menu",
+          search: "Directory", import: "Import Data", contact: "Contact Admin", backup: "Backup & Restore", free: "Free", sideFoot: "Directory workspace",
+          breadcrumbHome: "Home", breadcrumbDirectory: "Directory", languageLabel: "Language", eyebrow: "Beit Mellat",
+          pageTitle: "Find your family, all in one place.", pageLead: "A shared directory for family details and connections. Families provide their information in a spreadsheet, and the administrator adds approved data to the directory.",
+          villageTitle: "Our village", villageHint: "A few facts about our community", villageDescription: "Our village is a close-knit community where families have lived for generations. This directory brings together the people who make it home.", statPopulation: "Population", statVoters: "Voters", statArea: "Area", statAltitude: "Altitude", welcomeTitle: "A simple way to stay connected.", welcomeCopy: "The directory brings family information together in one place. Start with a family-submitted sheet; the administrator reviews and uploads it for everyone to use.",
+          sectionTitle: "How the directory works", sectionHint: "A clear process for every family", cardOneTitle: "Family information", cardOneCopy: "Each family prepares its own sheet with the details it wants included.",
+          cardTwoTitle: "Admin-managed import", cardTwoCopy: "The administrator collects the sheets and uploads the approved information.", cardThreeTitle: "Search when ready", cardThreeCopy: "Once the first records are added, the directory can be searched by the information you provide.",
+          noteLead: "Directory records will appear after the first approved import.", noteCopy: "No personal records are shown on this first home page.", footerLeft: "HerWebDB · Home", footerRight: "English is the default display language.",
+          navMessage: "This section will be connected in a later project step."
+        },
+        fr: {
+          brand: "Beit Mellat", sidebarTitle: "Beit Mellat", sidebarTagline: "Un espace pour les liens familiaux", menuCaption: "Menu",
+          search: "Annuaire", import: "Importer des données", contact: "Contacter l’administrateur", backup: "Sauvegarde et restauration", free: "Free", sideFoot: "Espace de l’annuaire",
+          breadcrumbHome: "Accueil", breadcrumbDirectory: "Annuaire", languageLabel: "Langue", eyebrow: "Beit Mellat",
+          pageTitle: "Retrouvez votre famille au même endroit.", pageLead: "Un annuaire partagé pour les informations et les liens familiaux. Chaque famille fournit ses informations dans un tableur, puis l’administrateur ajoute les données approuvées.",
+          villageTitle: "Notre village", villageHint: "Quelques données sur notre communauté", villageDescription: "Notre village est une communauté soudée où les familles vivent depuis des générations. Cet annuaire rassemble les personnes qui en font leur foyer.", statPopulation: "Population", statVoters: "Électeurs", statArea: "Superficie", statAltitude: "Altitude", welcomeTitle: "Un moyen simple de garder le contact.", welcomeCopy: "L’annuaire rassemble les informations familiales. Chaque famille transmet une feuille; l’administrateur la vérifie et importe les données approuvées.",
+          sectionTitle: "Fonctionnement de l’annuaire", sectionHint: "Une procédure claire pour chaque famille", cardOneTitle: "Informations familiales", cardOneCopy: "Chaque famille prépare sa feuille avec les informations qu’elle souhaite inclure.",
+          cardTwoTitle: "Importation par l’administrateur", cardTwoCopy: "L’administrateur rassemble les feuilles et importe les informations approuvées.", cardThreeTitle: "Recherche ensuite", cardThreeCopy: "Après l’ajout des premières fiches, vous pourrez rechercher dans l’annuaire selon les informations fournies.",
+          noteLead: "Les fiches apparaîtront après la première importation approuvée.", noteCopy: "Aucune donnée personnelle n’apparaît sur cette première page d’accueil.", footerLeft: "HerWebDB · Accueil", footerRight: "L’anglais est la langue d’affichage par défaut.",
+          navMessage: "Cette section sera reliée lors d’une prochaine étape du projet."
+        },
+        es: {
+          brand: "Beit Mellat", sidebarTitle: "Beit Mellat", sidebarTagline: "Un espacio para conectar a la familia", menuCaption: "Menú",
+          search: "Directorio", import: "Importar datos", contact: "Contactar al administrador", backup: "Respaldo y restauración", free: "Free", sideFoot: "Espacio del directorio",
+          breadcrumbHome: "Inicio", breadcrumbDirectory: "Directorio", languageLabel: "Idioma", eyebrow: "Beit Mellat",
+          pageTitle: "Encuentra a tu familia en un solo lugar.", pageLead: "Un directorio compartido con datos y vínculos familiares. Cada familia entrega su información en una hoja de cálculo y el administrador añade los datos aprobados.",
+          villageTitle: "Nuestro pueblo", villageHint: "Algunos datos de nuestra comunidad", villageDescription: "Nuestro pueblo es una comunidad unida donde las familias han vivido durante generaciones. Este directorio reúne a las personas que lo hacen su hogar.", statPopulation: "Población", statVoters: "Votantes", statArea: "Superficie", statAltitude: "Altitud", welcomeTitle: "Una forma sencilla de mantener el contacto.", welcomeCopy: "El directorio reúne la información familiar. Cada familia entrega una hoja y el administrador revisa e importa los datos aprobados.",
+          sectionTitle: "Cómo funciona el directorio", sectionHint: "Un proceso claro para cada familia", cardOneTitle: "Información familiar", cardOneCopy: "Cada familia prepara su hoja con los datos que quiere incluir.",
+          cardTwoTitle: "Importación administrada", cardTwoCopy: "El administrador reúne las hojas y carga la información aprobada.", cardThreeTitle: "Búsqueda más adelante", cardThreeCopy: "Cuando se añadan los primeros registros, se podrá buscar usando la información proporcionada.",
+          noteLead: "Los registros aparecerán después de la primera importación aprobada.", noteCopy: "Esta primera página de inicio no muestra datos personales.", footerLeft: "HerWebDB · Inicio", footerRight: "El idioma predeterminado es inglés.",
+          navMessage: "Esta sección se conectará en una etapa posterior del proyecto."
+        },
+        pt: {
+          brand: "Beit Mellat", sidebarTitle: "Beit Mellat", sidebarTagline: "Um espaço para aproximar a família", menuCaption: "Menu",
+          search: "Diretório", import: "Importar dados", contact: "Contactar o administrador", backup: "Backup e restauração", free: "Free", sideFoot: "Área do diretório",
+          breadcrumbHome: "Início", breadcrumbDirectory: "Diretório", languageLabel: "Idioma", eyebrow: "Beit Mellat",
+          pageTitle: "Encontre sua família em um só lugar.", pageLead: "Um diretório compartilhado com informações e contatos da família. Cada família envia seus dados em uma planilha e o administrador adiciona as informações aprovadas.",
+          villageTitle: "Nossa vila", villageHint: "Alguns dados da nossa comunidade", villageDescription: "Nossa vila é uma comunidade unida onde as famílias vivem há gerações. Este diretório reúne as pessoas que fazem dela seu lar.", statPopulation: "População", statVoters: "Eleitores", statArea: "Área", statAltitude: "Altitude", welcomeTitle: "Uma forma simples de manter contato.", welcomeCopy: "O diretório reúne as informações da família. Cada família envia uma planilha; o administrador confere e importa os dados aprovados.",
+          sectionTitle: "Como o diretório funciona", sectionHint: "Um processo claro para cada família", cardOneTitle: "Informações da família", cardOneCopy: "Cada família prepara sua planilha com os dados que deseja incluir.",
+          cardTwoTitle: "Importação pelo administrador", cardTwoCopy: "O administrador reúne as planilhas e carrega as informações aprovadas.", cardThreeTitle: "Pesquisa quando estiver pronto", cardThreeCopy: "Depois que os primeiros registros forem adicionados, será possível pesquisar pelos dados fornecidos.",
+          noteLead: "Os registros aparecerão após a primeira importação aprovada.", noteCopy: "Esta primeira página inicial não exibe dados pessoais.", footerLeft: "HerWebDB · Início", footerRight: "O inglês é o idioma de exibição padrão.",
+          navMessage: "Esta seção será conectada em uma etapa posterior do projeto."
+        }
+      };
+      const selector = document.getElementById("languageSelect");
+      const toast = document.getElementById("toast");
+      const sidebar = document.getElementById("sidebar");
+      const toggle = document.getElementById("menuToggle");
+      const scrim = document.getElementById("scrim");
+      let toastTimer;
+
+      function setLanguage(language) {
+        const selected = copy[language] ? language : "en";
+        document.documentElement.lang = selected;
+        document.title = copy[selected].brand;
+        document.querySelectorAll("[data-i18n]").forEach((element) => {
+          const key = element.dataset.i18n;
+          if (copy[selected][key]) element.textContent = copy[selected][key];
+        });
+        selector.value = selected;
+        try { localStorage.setItem("herwebdb-language", selected); } catch (_) { /* Storage may be unavailable for local files. */ }
+      }
+      function closeMenu() {
+        sidebar.classList.remove("is-open");
+        scrim.classList.remove("is-visible");
+        toggle.setAttribute("aria-expanded", "false");
+      }
+      function showToast(message) {
+        toast.textContent = message;
+        toast.classList.add("is-visible");
+        window.clearTimeout(toastTimer);
+        toastTimer = window.setTimeout(() => toast.classList.remove("is-visible"), 2400);
+      }
+      selector.addEventListener("change", (event) => setLanguage(event.target.value));
+      document.querySelectorAll("[data-nav]").forEach((item) => {
+        item.addEventListener("click", () => {
+          const pages = { home:"index.html", directory:"directory.html", search:"directory.html", import:"import.html", backup:"backup.html", contact:"contact.html", users:"users.html", inbox:"inbox.html", "business-directory":"business-directory.html" };
+          const nav = item.dataset.nav;
+          if (nav === 'logout') { fetch('/api/logout',{method:'POST'}).finally(()=>{ window.location.href='index.html'; }); return; }
+          if ((nav === 'directory' || nav === 'search') && !isLoggedIn) { window.location.href = 'login.html'; return; }
+          if (pages[nav]) { window.location.href = pages[nav]; return; }
+          document.querySelectorAll("[data-nav]").forEach((n) => n.removeAttribute("aria-current"));
+          item.setAttribute("aria-current", "page");
+          showToast(copy[selector.value].navMessage);
+          closeMenu();
+        });
+      });
+      toggle.addEventListener("click", () => {
+        const open = sidebar.classList.toggle("is-open");
+        scrim.classList.toggle("is-visible", open);
+        toggle.setAttribute("aria-expanded", String(open));
+      });
+      scrim.addEventListener("click", closeMenu);
+      document.addEventListener("keydown", (event) => { if (event.key === "Escape") closeMenu(); });
+      let initialLanguage = "en";
+      try { initialLanguage = localStorage.getItem("herwebdb-language") || "en"; } catch (_) { /* English remains the default. */ }
+      setLanguage(initialLanguage);
+    })();
+  </script>
+</body>
+</html>

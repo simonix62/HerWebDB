@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#32373d">
+  <title>HerWebDB · Business Directory</title>
+  <style>
+    @font-face { font-family: Poppins; src: url("bootstrap-sidebar-09/fonts/poppins-400-latin.woff2") format("woff2"); font-style: normal; font-weight: 400; font-display: swap; }
+    @font-face { font-family: Poppins; src: url("bootstrap-sidebar-09/fonts/poppins-500-latin.woff2") format("woff2"); font-style: normal; font-weight: 500; font-display: swap; }
+    @font-face { font-family: Poppins; src: url("bootstrap-sidebar-09/fonts/poppins-600-latin.woff2") format("woff2"); font-style: normal; font-weight: 600; font-display: swap; }
+    :root { color-scheme: light; --ink:#202b38; --muted:#718094; --blue:#2f89fc; --blue-deep:#1f6fd1; --sidebar:#32373d; --line:#e8edf3; --surface:#ffffff; --canvas:#dbe2ec; }
+    * { box-sizing: border-box; }
+    body { min-width:320px; margin:0; background:var(--canvas); color:var(--ink); font-family:Poppins,"Segoe UI",Arial,sans-serif; font-size:14px; line-height:1.6; }
+    button, select, input { font: inherit; }
+    button:focus-visible, select:focus-visible, a:focus-visible, input:focus-visible { outline:3px solid rgba(47,137,252,.46); outline-offset:3px; }
+    .app-shell { min-height:100vh; display:flex; }
+    .sidebar { position:relative; z-index:4; display:flex; flex:0 0 286px; flex-direction:column; min-height:100vh; overflow:hidden; background:var(--sidebar); color:#fff; box-shadow:8px 0 28px rgba(26,39,53,.08); transition:transform .25s ease; }
+    .sidebar-cover { position:relative; min-height:214px; padding:24px 24px 22px; overflow:hidden; background:radial-gradient(ellipse at 82% 2%, rgba(117,191,255,.62), transparent 34%), radial-gradient(ellipse at 16% 100%, rgba(46,137,252,.74), transparent 42%), linear-gradient(142deg,#20384f 0%,#28619a 50%,#3d9af3 100%); }
+    .sidebar-cover::before, .sidebar-cover::after { position:absolute; content:""; border:1px solid rgba(255,255,255,.18); border-radius:50%; pointer-events:none; }
+    .sidebar-cover::before { width:260px; height:260px; right:-145px; top:-125px; }
+    .sidebar-cover::after { width:180px; height:180px; right:-86px; top:-84px; }
+    .brand-top { position:relative; display:flex; align-items:center; gap:10px; z-index:1; }
+    .brand-mark { display:grid; width:34px; height:34px; place-items:center; border:1px solid rgba(255,255,255,.4); border-radius:11px; background:rgba(255,255,255,.15); color:white; }
+    .brand-mark svg { width:19px; height:19px; }
+    .brand-name { font-size:12px; font-weight:500; letter-spacing:.14em; text-transform:uppercase; }
+    .profile-block { position:relative; z-index:1; margin-top:27px; text-align:center; }
+    .profile-mark { display:grid; width:68px; height:68px; margin:0 auto 10px; place-items:center; border:3px solid rgba(255,255,255,.9); border-radius:50%; background:rgba(255,255,255,.18); box-shadow:0 5px 18px rgba(13,54,96,.18); font-size:21px; font-weight:500; letter-spacing:.05em; }
+    .profile-block h1 { margin:0; color:#fff; font-size:24px; font-weight:600; line-height:1.3; }
+    .profile-block p { margin:4px 0 0; color:rgba(255,255,255,.78); font-size:11px; letter-spacing:.035em; }
+    .sidebar-nav { padding:18px 14px 14px; }
+    .nav-caption { margin:0 12px 8px; color:rgba(255,255,255,.46); font-size:10px; font-weight:500; letter-spacing:.16em; text-transform:uppercase; }
+    .nav-list { display:grid; gap:5px; margin:0; padding:0; list-style:none; }
+    .nav-link { display:flex; width:100%; min-height:47px; align-items:center; gap:13px; padding:10px 12px; border:1px solid transparent; border-radius:9px; background:transparent; color:rgba(255,255,255,.72); text-align:left; cursor:pointer; transition:background .18s ease, color .18s ease, border-color .18s ease; }
+    .nav-link:hover { background:rgba(255,255,255,.075); color:#fff; }
+    .nav-link[aria-current="page"] { border-color:rgba(255,255,255,.1); background:linear-gradient(95deg, rgba(47,137,252,.27), rgba(47,137,252,.11)); color:#fff; box-shadow:inset 3px 0 0 var(--blue); }
+    .nav-icon { display:grid; width:20px; height:20px; flex:0 0 20px; place-items:center; color:currentColor; }
+    .nav-icon svg { width:18px; height:18px; stroke:currentColor; }
+    .nav-label { flex:1; font-size:13px; font-weight:400; }
+    .nav-arrow { width:15px; height:15px; color:rgba(255,255,255,.36); }
+    .sidebar-foot { margin-top:auto; padding:15px 20px 18px; border-top:1px solid rgba(255,255,255,.08); color:rgba(255,255,255,.5); font-size:10px; }
+    .sidebar-foot span { display:block; }
+    .main-column { display:flex; min-width:0; flex:1; flex-direction:column; }
+    .topbar { display:flex; min-height:76px; align-items:center; justify-content:space-between; gap:18px; padding:14px clamp(22px,4vw,52px); border-bottom:1px solid var(--line); background:rgba(255,255,255,.88); }
+    .topbar-left { display:flex; align-items:center; gap:14px; }
+    .crumb { display:flex; align-items:center; gap:9px; color:#8995a5; font-size:12px; }
+    .crumb strong { color:#394657; font-weight:500; }
+    .crumb-dot { width:4px; height:4px; border-radius:50%; background:#aeb9c6; }
+    .language-wrap { display:flex; align-items:center; gap:9px; color:#778496; font-size:11px; }
+    .language-wrap svg { width:16px; height:16px; stroke:#7e8a9a; }
+    .language-select { min-width:130px; padding:8px 30px 8px 11px; border:1px solid #e1e7ef; border-radius:8px; background:#fff; color:#344254; cursor:pointer; }
+    .menu-toggle { display:none; width:38px; height:38px; place-items:center; border:1px solid #e1e7ef; border-radius:9px; background:#fff; color:#354254; cursor:pointer; }
+    .menu-toggle svg { width:19px; height:19px; stroke:currentColor; }
+    main { width:100%; max-width:900px; margin:0 auto; padding:clamp(26px,4.5vw,58px) clamp(22px,4vw,52px) 38px; }
+    .page-heading { margin:0; color:#202b38; font-size:clamp(30px,4vw,43px); font-weight:500; letter-spacing:-.045em; line-height:1.18; }
+    .lead { max-width:650px; margin:15px 0 0; color:#748195; font-size:14px; line-height:1.8; }
+    .filters { display:flex; flex-wrap:nowrap; gap:8px; margin:0 0 18px; overflow-x:auto; }
+    .filters .search-input { min-width:90px; width:auto; flex:0 0 auto; padding:8px 10px; border:1px solid #e1e7ef; border-radius:8px; background:#fff; color:#344254; font-size:12px; }
+    .controls { display:flex; gap:10px; margin-bottom:10px; align-items:center; flex-wrap:wrap; }
+    .card-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:16px; }
+    .person-card { background:#fff; border:1px solid var(--line); border-radius:10px; padding:16px; margin-bottom:12px; }
+    .person-card .avatar { width:60px; height:60px; border-radius:50%; background:#eef6ff; color:#3185e7; display:grid; place-items:center; font-weight:600; flex:0 0 60px; overflow:hidden; }
+    .person-card .person-info { margin-left:16px; flex:1; }
+    .person-card .person-name { margin:0 0 6px; font-size:16px; color:#202b38; }
+    .person-card .person-meta { margin:0 0 8px; font-size:13px; color:#748195; }
+    .person-card .person-fields { font-size:12px; color:#536a84; margin-bottom:8px; }
+    .person-card .person-fields span { margin-right:12px; }
+    .person-card .person-links a { color:var(--blue-deep); text-decoration:none; margin-right:12px; font-size:12px; }
+    .card-list table { width:100%; border-collapse:collapse; font-size:12px; }
+    .card-list th { background:#f4f7fb; color:#394657; font-weight:500; text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); }
+    .card-list td { padding:8px 10px; border-bottom:1px solid var(--line); }
+    .card-list tr:nth-child(even) td { background:#eef2f6; }
+    .btn { padding:7px 12px; border:0; border-radius:8px; background:var(--blue); color:#fff; cursor:pointer; font-size:12px; margin-right:6px; }
+    .btn.btn-primary { background:#2f89fc; }
+    .btn.danger { background:#e05a5a; }
+    .btn.secondary { background:#eef6ff; color:#1f6fd1; }
+    .result { margin-top:10px; padding:10px 12px; border-radius:8px; background:#f3f8ff; color:#334c69; font-size:12px; display:none; }
+    .result.show { display:block; }
+    .result.error { background:#fdecea; color:#a63a3a; }
+    .hidden { display:none !important; }
+    .modal { display:none; position:fixed; inset:0; z-index:20; }
+    .modal.is-visible { display:block; }
+    .modal-backdrop { position:absolute; inset:0; background:rgba(18,28,39,.45); backdrop-filter:blur(2px); }
+    .modal-card { position:absolute; top:10%; left:50%; transform:translate(-50%,0); width:min(700px,92vw); max-height:90vh; overflow:auto; background:#fff; border:1px solid var(--line); border-radius:12px; box-shadow:0 24px 60px rgba(18,28,39,.25); padding:22px; display:flex; flex-direction:column; gap:14px; }
+    .modal-header { display:flex; align-items:center; justify-content:space-between; gap:10px; border-bottom:1px solid var(--line); padding-bottom:10px; }
+    .modal-header h3 { margin:0; font-size:16px; }
+    .modal-card .form-row { margin-bottom:0; }
+    .modal-card .form-row label { font-size:12px; }
+    .modal-card .form-row input { padding:8px 10px; font-size:12px; width:100%; }
+    .empty { text-align:center; padding:40px; color:#718094; }
+    .page-footer { display:flex; justify-content:space-between; gap:16px; margin-top:33px; padding-top:16px; border-top:1px solid var(--line); color:#9aa5b2; font-size:10px; }
+    .toast { position:fixed; right:22px; bottom:22px; z-index:10; max-width:min(360px, calc(100vw - 36px)); padding:12px 16px; border:1px solid rgba(255,255,255,.12); border-radius:10px; background:#283545; color:#fff; box-shadow:0 12px 30px rgba(18,32,49,.22); opacity:0; transform:translateY(8px); pointer-events:none; transition:opacity .2s ease, transform .2s ease; font-size:12px; }
+    .toast.is-visible { opacity:1; transform:translateY(0); }
+    .scrim { display:none; }
+    @media (max-width:760px) { .sidebar { position:fixed; inset:0 auto 0 0; width:min(286px,84vw); min-height:100dvh; transform:translateX(-102%); } .sidebar.is-open { transform:translateX(0); } .scrim { position:fixed; inset:0; z-index:3; display:block; background:rgba(18,28,39,.42); opacity:0; pointer-events:none; transition:opacity .2s ease; } .scrim.is-visible { opacity:1; pointer-events:auto; } .menu-toggle { display:grid; } .topbar { min-height:66px; padding:11px 18px; } .crumb { font-size:11px; } .language-wrap > span { display:none; } .language-select { min-width:105px; } main { padding:30px 18px 25px; } .page-footer { flex-direction:column; gap:5px; } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior:auto !important; transition-duration:.01ms !important; animation-duration:.01ms !important; } }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar" aria-label="Main sidebar">
+      <div class="sidebar-cover">
+        <div class="brand-top">
+          <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 19.5V8.8L12 3l8 5.8v10.7h-5.3v-6.2H9.3v6.2H4Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M8 10.5h.01M16 10.5h.01" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"/></svg></span>
+          <span class="brand-name" data-i18n="brand">Beit Mellat</span>
+        </div>
+        <div class="profile-block">
+          <div class="profile-mark" aria-hidden="true">BM</div>
+          <h1 data-i18n="sidebarTitle">Business Directory</h1>
+          <p data-i18n="sidebarTagline">Business listings &amp; services</p>
+        </div>
+      </div>
+      <nav class="sidebar-nav" aria-label="Primary navigation">
+          <li><button class="nav-link" type="button" data-nav="home"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg></span><span class="nav-label" data-i18n="home">Home</span><svg class="nav-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></li>
+          <li><button class="nav-link" type="button" data-nav="directory"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.2 4.2"/></svg></span><span class="nav-label" data-i18n="directory">Family Directory</span><svg class="nav-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></li>
+          <li><button class="nav-link" type="button" data-nav="business-directory" aria-current="page"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="m16 21 4-4M4 9l16-2"/></svg></span><span class="nav-label" data-i18n="business-directory">Business Directory</span><svg class="nav-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></li>
+          <li><button class="nav-link" type="button" data-nav="import"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V4m0 0L7.5 8.5M12 4l4.5 4.5"/><path d="M5 14.5v4A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5v-4"/></svg></span><span class="nav-label" data-i18n="import">Import Data</span><svg class="nav-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></li>
+          <li><button class="nav-link" type="button" data-nav="contact"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="14" rx="2"/><path d="m4.5 7 7.5 5.8L19.5 7"/></svg></span><span class="nav-label" data-i18n="contact">Contact Admin</span><svg class="nav-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></li>
+          <li><button class="nav-link" type="button" data-nav="backup"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v12H4zM8 20h8M12 16v4"/></svg></span><span class="nav-label" data-i18n="backup">Backup & Restore</span><svg class="nav-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></li>
+          <li><button class="nav-link" type="button" data-nav="users"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="nav-label" data-i18n="users">Users</span><svg class="nav-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></li>
+          <li><button class="nav-link" type="button" data-nav="inbox"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="5" width="22" height="14" rx="2"/><path d="M12 11l3 2M7.5 11l4.5 3"/></svg></span><span class="nav-label" data-i18n="inbox">Inbox</span><svg class="nav-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></li>
+          <li><button class="nav-link" type="button" data-nav="logout"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7.5h16M6 7.5V19h12V7.5M9 7.5V5h6v2.5M9.5 11v4.5M14.5 11v4.5"/></svg></span><span class="nav-label" data-i18n="logout">Logout</span><svg class="nav-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></li>
+        </ul>
+      </nav>
+      <div class="sidebar-foot"><span data-i18n="sideFoot">Business Directory workspace</span><span>HerWebDB</span></div>
+    </aside>
+    <button class="scrim" id="scrim" type="button" aria-label="Close navigation"></button>
+
+    <div class="main-column">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="menu-toggle" id="menuToggle" type="button" aria-label="Open navigation" aria-controls="sidebar" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+          <div class="crumb"><span data-i18n="breadcrumbHome">Home</span><span class="crumb-dot" aria-hidden="true"></span><strong data-i18n="breadcrumbDirectory">Business Directory</strong></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span id="userLabel" style="font-size:11px;color:#778496;"></span>
+          <label class="language-wrap" for="businessLanguageSelect">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3.5 9h17M3.5 15h17M12 3c2.2 2.4 3.2 5.4 3.2 9s-1 6.6-3.2 9c-2.2-2.4-3.2-5.4-3.2-9s1-6.6 3.2-9Z"/></svg>
+            <span data-i18n="languageLabel">Language</span>
+            <select class="language-select" id="businessLanguageSelect" aria-label="Select display language">
+              <option value="en">EN · English</option>
+              <option value="fr">FR · Français</option>
+              <option value="es">SP · Español</option>
+              <option value="pt">PT · Português</option>
+            </select>
+          </label>
+          <button class="btn secondary" id="logoutBtn" style="margin:0;">Logout</button>
+        </div>
+      </header>
+
+      <main>
+        <h1 class="page-heading" data-i18n="pageTitle">Business Directory</h1>
+        <p class="lead" data-i18n="pageLead">Browse business listings. Switch between a card grid and a detailed list.</p>
+
+        <div class="controls">
+          <input type="text" class="search-input" id="searchInput" placeholder="Search by name, type, city..." />
+          <select class="search-input" id="fType"><option value="">All types</option></select>
+          <select class="search-input" id="fCity"><option value="">All cities</option></select>
+          <select class="search-input" id="fCountry"><option value="">All countries</option></select>
+          <button class="btn secondary btn-primary" id="btnGridView" data-view="grid">Grid</button>
+          <button class="btn secondary" id="btnListView" data-view="list">List</button>
+          <span id="countLabel" style="margin-left:auto;font-size:12px;color:#748195;"></span>
+        </div>
+
+        <div class="card-grid" id="gridContainer"></div>
+
+        <div class="card-list" id="listContainer" style="display:none;">
+          <table>
+            <thead>
+              <tr>
+                <th>Business name</th><th>Type</th><th>Owner</th><th>Speciality</th><th>City</th><th>Country</th><th>Phone</th><th>Email</th><th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+        </div>
+
+        <div class="modal" id="editModal">
+          <div class="modal-backdrop" id="editModalBackdrop"></div>
+          <div class="modal-card">
+            <div class="modal-header"><h3>Edit business</h3><button class="btn secondary" id="editModalClose">Close</button></div>
+            <form id="editForm">
+              <div class="form-row"><label>ID</label><input id="eId" type="text" readonly /></div>
+              <div class="form-row"><label for="eName">Business name</label><input id="eName" type="text" /></div>
+              <div class="form-row"><label for="eType">Type</label><input id="eType" type="text" /></div>
+              <div class="form-row"><label for="eCity">City</label><input id="eCity" type="text" /></div>
+              <div class="form-row"><label for="eCountry">Country</label><input id="eCountry" type="text" /></div>
+              <div class="form-row"><label for="eOwner">Owner</label><input id="eOwner" type="text" /></div>
+              <div class="form-row"><label for="eSpeciality">Speciality</label><input id="eSpeciality" type="text" /></div>
+              <div class="form-row"><label for="ePhone">Phone</label><input id="ePhone" type="text" /></div>
+              <div class="form-row"><label for="eEmail">Email</label><input id="eEmail" type="email" /></div>
+              <div class="form-row"><label for="eFacebook">Facebook</label><input id="eFacebook" type="text" /></div>
+              <div class="form-row"><label for="eInstagram">Instagram</label><input id="eInstagram" type="text" /></div>
+              <div class="form-row"><label for="eTiktok">TikTok</label><input id="eTiktok" type="text" /></div>
+              <div class="form-row"><label for="ePhoto">Photo</label><input id="ePhoto" type="file" accept="image/*" /></div>
+              <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px;">
+                <button class="btn secondary" id="editModalCancel" type="button">Cancel</button>
+                <button class="btn" id="editModalSave" type="button">Save changes</button>
+              </div>
+            </form>
+            <div class="result" id="editResult"></div>
+          </div>
+        </div>
+
+        <footer class="page-footer"><span data-i18n="footerLeft">HerWebDB · Business Directory</span><span data-i18n="footerRight">Admin only for editing</span></footer>
+      </main>
+    </div>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    (() => {
+      const originalFetch = window.fetch;
+      window.fetch = function(url, options) {
+        options = options || {};
+        if (!options.credentials) options.credentials = 'include';
+        return originalFetch(url, options);
+      };
+
+      fetch('/api/me').then(r=>{
+        if(!r.ok){ window.location.href='login.html'; return null; }
+        return r.json();
+      }).then(data=>{
+        if(!data || !data.user){ window.location.href='login.html'; return; }
+        if(data.mustChange){ window.location.href='change-password.html'; return; }
+        if(data.user.status !== 'confirmed'){ window.location.href='login.html?waiting=1'; return; }
+        document.getElementById("userLabel").textContent = data.user.username;
+        fetchBusinesses();
+      }).catch(()=>{ window.location.href='login.html'; });
+
+      const copy = {
+        en: { brand:"Beit Mellat", sidebarTitle:"Beit Mellat", sidebarTagline:"Business listings &amp; services", menuCaption:"Menu", home:"Home", directory:"Family Directory", "business-directory":"Business Directory", import:"Import Data", contact:"Contact Admin", backup:"Backup & Restore", free:"Free", sideFoot:"Business Directory workspace", breadcrumbHome:"Home", breadcrumbDirectory:"Business Directory", languageLabel:"Language", pageTitle:"Business Directory", pageLead:"Browse business listings. Switch between a card grid and a detailed list.", footerLeft:"HerWebDB · Business Directory", footerRight:"Admin only for editing", navMessage:"This section will be connected in a later project step." },
+        fr: { brand:"Beit Mellat", sidebarTitle:"Beit Mellat", sidebarTagline:"Annonces commerciales &amp; services", menuCaption:"Menu", home:"Accueil", directory:"Répertoire familial", "business-directory":"Répertoire d'affaires", import:"Importer des données", contact:"Contacter l'administrateur", backup:"Sauvegarde et restauration", free:"Free", sideFoot:"Espace du répertoire d'affaires", breadcrumbHome:"Accueil", breadcrumbDirectory:"Répertoire d'affaires", languageLabel:"Langue", pageTitle:"Répertoire d'affaires", pageLead:"Parcourir les annonces commerciales. Basculer entre une vue en grille et une liste détaillée.", footerLeft:"HerWebDB · Répertoire d'affaires", footerRight:"L'administration uniquement pour la modification", navMessage:"Cette section sera connectée ultérieurement." },
+        es: { brand:"Beit Mellat", sidebarTitle:"Beit Mellat", sidebarTagline:"Anuncios comerciales y servicios", menuCaption:"Menú", home:"Inicio", directory:"Directorio familiar", "business-directory":"Directorio de negocios", import:"Importar datos", contact:"Contactar al administrador", backup:"Respaldo y restauración", free:"Free", sideFoot:"Espacio del directorio de negocios", breadcrumbHome:"Inicio", breadcrumbDirectory:"Directorio de negocios", languageLabel:"Idioma", pageTitle:"Directorio de negocios", pageLead:"Navegar por los anuncios comerciales. Cambiar entre una cuadrícula y una lista detallada.", footerLeft:"HerWebDB · Directorio de negocios", footerRight:"Solo para edición de administrador", navMessage:"Esta sección se conectará más adelante." },
+        pt: { brand:"Beit Mellat", sidebarTitle:"Beit Mellat", sidebarTagline:"Anúncios comerciais e serviços", menuCaption:"Menu", home:"Início", directory:"Diretório familiar", "business-directory":"Diretório de negócios", import:"Importar dados", contact:"Contactar o administrador", backup:"Backup e restauração", free:"Free", sideFoot:"Espaço do diretório de negócios", breadcrumbHome:"Início", breadcrumbDirectory:"Diretório de negócios", languageLabel:"Idioma", pageTitle:"Diretório de negócios", pageLead:"Navegar pelos anúncios comerciais. Alternar entre uma grade e uma lista detalhada.", footerLeft:"HerWebDB · Diretório de negócios", footerRight:"Somente edição de administrador", navMessage:"Esta seção será conectada posteriormente." }
+      };
+      const selector = document.getElementById("businessLanguageSelect");
+      function setLanguage(language){ const selected = copy[language]?language:"en"; document.documentElement.lang=selected; document.title=copy[selected].brand; document.querySelectorAll("[data-i18n]").forEach(el=>{const k=el.dataset.i18n; if(copy[selected][k]) el.textContent=copy[selected][k];}); selector.value=selected; try{localStorage.setItem("herwebdb-language",selected);}catch(_){} }
+      selector.addEventListener("change", e=>setLanguage(e.target.value));
+      let initialLanguage="en"; try{ initialLanguage=localStorage.getItem("herwebdb-language")||"en"; }catch(_){}
+      setLanguage(initialLanguage);
+
+      const result = document.getElementById("toast");
+      function showToast(msg){ result.textContent=msg; result.classList.add("is-visible"); setTimeout(()=>result.classList.remove("is-visible"),2400); }
+
+      const editResult = document.getElementById("editResult");
+      function showEdit(msg,isError){ editResult.textContent=msg; editResult.classList.add("show"); editResult.classList.toggle("error", !!isError); setTimeout(()=>editResult.classList.remove("show"),2400); }
+
+      let businesses = [];
+      let isAdmin = false;
+      let currentView = 'grid';
+
+      const gridEl = document.getElementById("gridContainer");
+      const listWrap = document.getElementById("listContainer");
+      const tableBody = document.getElementById("tableBody");
+      const countLabel = document.getElementById("countLabel");
+      const searchInput = document.getElementById("searchInput");
+      const fType = document.getElementById("fType");
+      const fCity = document.getElementById("fCity");
+      const fCountry = document.getElementById("fCountry");
+
+      function esc(v){ return String(v==null?"":v).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+
+      async function fetchBusinesses(){
+        const res = await fetch('/api/businesses');
+        if(!res.ok){ showToast("Failed to load businesses"); return; }
+        businesses = await res.json();
+        populateFilters();
+        render();
+      }
+
+      function populateFilters(){
+        const types = [...new Set(businesses.map(b=>b.business_type).filter(Boolean))];
+        const cities = [...new Set(businesses.map(b=>b.city).filter(Boolean))];
+        const countries = [...new Set(businesses.map(b=>b.country).filter(Boolean))];
+
+        fType.innerHTML = '<option value="">All types</option>' + types.map(t=>`<option value="${esc(t)}">${esc(t)}</option>`).join('');
+        fCity.innerHTML = '<option value="">All cities</option>' + cities.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');
+        fCountry.innerHTML = '<option value="">All countries</option>' + countries.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');
+      }
+
+      function render(){
+        const term = searchInput.value.toLowerCase();
+        const type = fType.value;
+        const city = fCity.value;
+        const country = fCountry.value;
+
+        const filtered = businesses.filter(b => {
+          const haystack = (b.name||'')+' '+(b.business_type||'')+' '+(b.owner||'')+' '+(b.speciality||'')+' '+(b.city||'')+' '+(b.country||'')+' '+(b.phone||'')+' '+(b.email||'');
+          if(term && !haystack.toLowerCase().includes(term)) return false;
+          if(type && b.business_type !== type) return false;
+          if(city && b.city !== city) return false;
+          if(country && b.country !== country) return false;
+          return true;
+        });
+
+        countLabel.textContent = filtered.length + ' businesses';
+
+        if(currentView === 'grid') {
+          gridEl.style.display = 'grid';
+          listWrap.style.display = 'none';
+        } else {
+          gridEl.style.display = 'none';
+          listWrap.style.display = 'block';
+        }
+
+        if(filtered.length === 0) {
+          gridEl.innerHTML = '<div class="empty">No businesses found matching your criteria.</div>';
+          tableBody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:40px;">No businesses found matching your criteria.</td></tr>';
+          return;
+        }
+
+        gridEl.innerHTML = filtered.map(b => `
+          <article class="person-card">
+            <div class="avatar">${b.photo?`<img src="${esc(b.photo)}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`:esc(b.name.charAt(0))}</div>
+            <div class="person-info">
+              <h3 class="person-name">${esc(b.name)}</h3>
+              <p class="person-meta">${esc(b.business_type||'')} · ${esc(b.city||'')}, ${esc(b.country||'')}</p>
+              <div class="person-fields">
+                <span><strong>Owner:</strong> ${esc(b.owner||'')}</span>
+                <span><strong>Speciality:</strong> ${esc(b.speciality||'')}</span>
+                <span><strong>Phone:</strong> ${esc(b.phone||'')}</span>
+                <span><strong>Email:</strong> ${esc(b.email||'')}</span>
+              </div>
+              <div class="person-links">
+                ${b.facebook?`<a href="#" title="Facebook">${esc(b.facebook)}</a>`:""}
+                ${b.instagram?`<a href="#" title="Instagram">${esc(b.instagram)}</a>`:""}
+                ${b.tiktok?`<a href="#" title="TikTok">${esc(b.tiktok)}</a>`:""}
+              </div>
+            </div>
+          </article>`).join("");
+
+        tableBody.innerHTML = filtered.map(b => `
+          <tr>
+            <td>${esc(b.name)}</td><td>${esc(b.business_type)}</td><td>${esc(b.owner)}</td><td>${esc(b.speciality)}</td><td>${esc(b.city)}</td><td>${esc(b.country)}</td><td>${esc(b.phone)}</td><td>${esc(b.email)}</td>
+            <td>${isAdmin?`<button class="btn" data-edit="${b.id}" style="padding:4px 8px;font-size:11px;">Edit</button> <button class="btn danger" data-del="${b.id}" style="padding:4px 8px;font-size:11px;">Delete</button>`:""}</td>
+          </tr>`).join("");
+
+        if(!isAdmin) return;
+        document.querySelectorAll("[data-edit]").forEach(btn=>btn.addEventListener("click", async ()=>{
+          const id = btn.dataset.edit;
+          const res = await fetch("/api/businesses/"+id);
+          if(!res.ok){ showEdit("Failed to load business", true); return; }
+          const biz = await res.json();
+          document.getElementById("eId").value = biz.id;
+          document.getElementById("eName").value = biz.name||"";
+          document.getElementById("eType").value = biz.business_type||"";
+          document.getElementById("eCity").value = biz.city||"";
+          document.getElementById("eCountry").value = biz.country||"";
+          document.getElementById("eOwner").value = biz.owner||"";
+          document.getElementById("eSpeciality").value = biz.speciality||"";
+          document.getElementById("ePhone").value = biz.phone||"";
+          document.getElementById("eEmail").value = biz.email||"";
+          document.getElementById("eFacebook").value = biz.facebook||"";
+          document.getElementById("eInstagram").value = biz.instagram||"";
+          document.getElementById("eTiktok").value = biz.tiktok||"";
+          document.getElementById("editModal").classList.add("is-visible");
+        }));
+        document.querySelectorAll("[data-del]").forEach(btn=>btn.addEventListener("click", async ()=>{
+          if(!confirm("Delete this business?")) return;
+          const id = btn.dataset.del;
+          const res = await fetch("/api/businesses/"+id, {method:"DELETE"});
+          if(!res.ok){ showEdit("Delete failed", true); return; }
+          showToast("Business deleted.");
+          fetchBusinesses();
+        }));
+      }
+
+      searchInput.addEventListener("input", render);
+      fType.addEventListener("change", render);
+      fCity.addEventListener("change", render);
+      fCountry.addEventListener("change", render);
+
+      const editModal = document.getElementById("editModal");
+      const editModalBackdrop = document.getElementById("editModalBackdrop");
+      const editModalClose = document.getElementById("editModalClose");
+      const editModalCancel = document.getElementById("editModalCancel");
+      const editModalSave = document.getElementById("editModalSave");
+
+      function closeEditModal(){ editModal.classList.remove("is-visible"); editResult.textContent=""; editResult.className="result"; }
+      editModalClose.addEventListener("click", closeEditModal);
+      editModalCancel.addEventListener("click", closeEditModal);
+      editModalBackdrop.addEventListener("click", closeEditModal);
+
+      editModalSave.addEventListener("click", async ()=>{
+        const id = document.getElementById("eId").value;
+        const formData = new FormData();
+        formData.append('name', document.getElementById("eName").value);
+        formData.append('business_type', document.getElementById("eType").value);
+        formData.append('city', document.getElementById("eCity").value);
+        formData.append('country', document.getElementById("eCountry").value);
+        formData.append('owner', document.getElementById("eOwner").value);
+        formData.append('speciality', document.getElementById("eSpeciality").value);
+        formData.append('phone', document.getElementById("ePhone").value);
+        formData.append('email', document.getElementById("eEmail").value);
+        formData.append('facebook', document.getElementById("eFacebook").value);
+        formData.append('instagram', document.getElementById("eInstagram").value);
+        formData.append('tiktok', document.getElementById("eTiktok").value);
+        const photoFile = document.getElementById("ePhoto").files[0];
+        if(photoFile) formData.append('photo', photoFile);
+        try {
+          const res = await fetch("/api/businesses/"+id, { method:"PUT", body: formData });
+          if(!res.ok){ const d = await res.json().catch(()=>({})); editResult.textContent = d.error||"Save failed"; editResult.classList.add("show"); editResult.classList.add("error"); return; }
+          closeEditModal();
+          showToast("Business updated.");
+          fetchBusinesses();
+        } catch(err){ editResult.textContent = err.message; editResult.classList.add("show"); editResult.classList.add("error"); }
+      });
+
+      document.getElementById("btnGridView").addEventListener("click", ()=>{
+        currentView = 'grid';
+        gridEl.style.display = 'grid';
+        listWrap.style.display = 'none';
+        document.getElementById("btnGridView").classList.add("btn-primary");
+        document.getElementById("btnListView").classList.remove("btn-primary");
+      });
+      document.getElementById("btnListView").addEventListener("click", ()=>{
+        currentView = 'list';
+        gridEl.style.display = 'none';
+        listWrap.style.display = 'block';
+        document.getElementById("btnGridView").classList.remove("btn-primary");
+        document.getElementById("btnListView").classList.add("btn-primary");
+      });
+
+      document.getElementById("logoutBtn").addEventListener("click", async ()=>{ await fetch("/api/logout",{method:"POST"}); window.location.href="login.html"; });
+
+      document.querySelectorAll("[data-nav]").forEach(item=>item.addEventListener("click", ()=>{
+        const pages = { home:"index.html", directory:"directory.html", "business-directory":"business-directory.html", import:"import.html", backup:"backup.html", contact:"contact.html", users:"users.html", inbox:"inbox.html" };
+        const nav = item.dataset.nav;
+        if (nav === 'logout') { fetch('/api/logout',{method:'POST'}).finally(()=>{ window.location.href='index.html'; }); return; }
+        if (pages[nav]) { window.location.href = pages[nav]; return; }
+      }));
+
+      const toggle = document.getElementById("menuToggle");
+      const sidebar = document.getElementById("sidebar");
+      const scrim = document.getElementById("scrim");
+      if(toggle){ toggle.addEventListener("click", ()=>{ const open=sidebar.classList.toggle("is-open"); scrim.classList.toggle("is-visible",open); toggle.setAttribute("aria-expanded",String(open)); }); }
+      if(scrim){ scrim.addEventListener("click", ()=>{ sidebar.classList.remove("is-open"); scrim.classList.remove("is-visible"); toggle.setAttribute("aria-expanded","false"); }); }
+    })();
+  </script>
+</body>
+</html>

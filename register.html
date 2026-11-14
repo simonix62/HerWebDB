@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#32373d">
+  <title>HerWebDB · Register</title>
+  <style>
+    @font-face { font-family: Poppins; src: url("bootstrap-sidebar-09/fonts/poppins-400-latin.woff2") format("woff2"); font-style: normal; font-weight: 400; font-display: swap; }
+    @font-face { font-family: Poppins; src: url("bootstrap-sidebar-09/fonts/poppins-500-latin.woff2") format("woff2"); font-style: normal; font-weight: 500; font-display: swap; }
+    @font-face { font-family: Poppins; src: url("bootstrap-sidebar-09/fonts/poppins-600-latin.woff2") format("woff2"); font-style: normal; font-weight: 600; font-display: swap; }
+    :root { color-scheme: light; --ink:#202b38; --muted:#718094; --blue:#2f89fc; --blue-deep:#1f6fd1; --line:#e8edf3; --surface:#ffffff; --canvas:#dbe2ec; }
+    * { box-sizing: border-box; }
+    html, body { height:100%; }
+    body { margin:0; background:var(--canvas); color:var(--ink); font-family:Poppins,"Segoe UI",Arial,sans-serif; font-size:14px; line-height:1.6; display:grid; place-items:center; padding:24px; }
+    .card { width:100%; max-width:420px; background:#fff; border:1px solid var(--line); border-radius:15px; padding:30px 26px; box-shadow:0 12px 36px rgba(36,58,85,.06); }
+    .brand { display:flex; align-items:center; gap:10px; margin-bottom:18px; }
+    .brand-mark { display:grid; width:34px; height:34px; place-items:center; border:1px solid rgba(47,137,252,.3); border-radius:11px; background:#eef6ff; color:#1f6fd1; }
+    .brand-mark svg { width:19px; height:19px; }
+    .brand-name { font-size:12px; font-weight:500; letter-spacing:.14em; text-transform:uppercase; color:#394657; }
+    h1 { margin:0 0 6px; font-size:22px; font-weight:500; color:#202b38; letter-spacing:-.02em; }
+    p { margin:0 0 18px; color:#718094; font-size:13px; }
+    .form-row { display:grid; gap:6px; margin-bottom:12px; }
+    .form-row label { font-size:12px; color:#536a84; font-weight:500; }
+    .form-row input { padding:9px 12px; border:1px solid #e1e7ef; border-radius:8px; background:#fff; color:#344254; width:100%; }
+    .btn { width:100%; padding:10px 16px; border:0; border-radius:8px; background:var(--blue); color:#fff; cursor:pointer; font-size:13px; margin-top:6px; }
+    .result { margin-top:12px; padding:10px 12px; border-radius:8px; font-size:12px; display:none; }
+    .result.show { display:block; }
+    .result.error { background:#fdecea; color:#a63a3a; }
+    .result.ok { background:#eaf6ea; color:#2e6b3a; }
+    .hint { margin-top:14px; font-size:11px; color:#9aa5b2; text-align:center; }
+    .hint a { color:#1f6fd1; text-decoration:underline; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 19.5V8.8L12 3l8 5.8v10.7h-5.3v-6.2H9.3v6.2H4Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></span>
+      <span class="brand-name">HerWebDB</span>
+    </div>
+    <h1>Create account</h1>
+    <p>Register to join the directory. Your account will be pending admin approval.</p>
+    <div class="form-row">
+      <label for="regFullName">Full name</label>
+      <input id="regFullName" type="text" placeholder="Enter your full name" autocomplete="name" />
+    </div>
+    <div class="form-row">
+      <label for="regEmail">Email address</label>
+      <input id="regEmail" type="email" placeholder="you@example.com" autocomplete="email" />
+    </div>
+    <div class="form-row">
+      <label for="regUsername">Username</label>
+      <input id="regUsername" type="text" placeholder="Choose a username" autocomplete="username" />
+    </div>
+    <div class="form-row">
+      <label for="regPassword">Password</label>
+      <input id="regPassword" type="password" placeholder="At least 6 characters" autocomplete="new-password" />
+    </div>
+    <button class="btn" id="regBtn">Register</button>
+    <div class="result" id="result"></div>
+    <div class="hint">Already have an account? <a href="login.html">Sign in</a></div>
+  </div>
+
+  <script>
+    (() => {
+      const originalFetch = window.fetch;
+      window.fetch = function(url, options) {
+        options = options || {};
+        if (!options.credentials) options.credentials = 'include';
+        return originalFetch(url, options);
+      };
+      const result = document.getElementById("result");
+      function show(msg, ok){ result.textContent=msg; result.classList.add("show"); result.classList.toggle("ok", !!ok); result.classList.toggle("error", !ok); }
+      document.getElementById("regBtn").addEventListener("click", async ()=>{
+        const full_name = document.getElementById("regFullName").value.trim();
+        const email = document.getElementById("regEmail").value.trim();
+        const username = document.getElementById("regUsername").value.trim();
+        const password = document.getElementById("regPassword").value;
+        if(!full_name || !email || !username || !password){ show("All fields are required.", false); return; }
+        if(password.length < 6){ show("Password must be at least 6 characters.", false); return; }
+        try {
+          const res = await fetch("/api/register", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({full_name, email, username, password}) });
+          const data = await res.json();
+          if(!res.ok) throw new Error(data.error||"Registration failed");
+          show(data.message||"Account created. Waiting for admin confirmation.", true);
+          document.getElementById("regFullName").value="";
+          document.getElementById("regEmail").value="";
+          document.getElementById("regUsername").value="";
+          document.getElementById("regPassword").value="";
+        } catch(err){ show(err.message, false); }
+      });
+      document.getElementById("regPassword").addEventListener("keydown", e=>{ if(e.key==="Enter") document.getElementById("regBtn").click(); });
+    })();
+  </script>
+</body>
+</html>
